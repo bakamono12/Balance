@@ -297,7 +297,7 @@ See the [LICENSE](./LICENSE) file for full details.
 
 **Developed with ❤️ by Abhishek Pathak**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@yourusername](https://github.com/bakamono12)
 - Email: pathaka895@gmail.com
 
 ---
