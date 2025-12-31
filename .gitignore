@@ -1,0 +1,58 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# generated native folders
+/ios
+
+# android build outputs
+/android/app/build
+/android/build
+/android/.gradle
+/android/app/src/main/assets
+/android/app/src/main/res/drawable-*
+/android/app/src/main/res/raw
+
+# generic pycharm files and custom files
+.idea/
+*.iml
+
+# development scripts and test files
+verify-app.sh
+TEST*.md
+ISSUE*.md
+UI/
