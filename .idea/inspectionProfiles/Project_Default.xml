@@ -1,0 +1,40 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="flask" />
+          <option value="requests" />
+          <option value="python-dotenv" />
+          <option value="gevent" />
+          <option value="python-dateutil" />
+          <option value="flask_login" />
+          <option value="flask-sqlalchemy" />
+          <option value="flask-migrate" />
+          <option value="flask-jwt-extended" />
+          <option value="flask-bcrypt" />
+          <option value="flask-cors" />
+          <option value="PyMySQL" />
+          <option value="psycopg2-binary" />
+          <option value="redis" />
+          <option value="APScheduler" />
+          <option value="schedule" />
+          <option value="scikit-learn" />
+          <option value="numpy" />
+          <option value="pandas" />
+          <option value="cryptography" />
+          <option value="gunicorn" />
+          <option value="websockets" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyStubPackagesAdvertiser" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="celery-types==0.23.0" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

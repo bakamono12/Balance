@@ -1,0 +1,1765 @@
+<!-- Category Management - Dark Mode -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Category Management</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-dark": "#182430", // Slightly lighter for list items
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3748;
+            border-radius: 3px;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+
+        .material-symbols-outlined.filled {
+            font-variation-settings:
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display antialiased overflow-hidden selection:bg-primary/30">
+<!-- Top Navigation Bar -->
+<div class="sticky top-0 z-50 flex flex-col bg-background-light dark:bg-background-dark border-b border-gray-200 dark:border-white/5">
+<!-- Status Bar Spacer (Simulated) -->
+<div class="h-10 w-full"></div>
+<div class="flex items-center justify-between px-4 pb-4 pt-2">
+<!-- Back Button -->
+<button class="flex h-10 w-10 items-center justify-center rounded-full text-slate-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 transition-all">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<!-- Title -->
+<h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+                Manage Categories
+            </h1>
+<!-- Edit Action (Alternative to Add) -->
+<button class="flex h-10 px-2 items-center justify-center rounded-lg text-primary font-semibold text-sm hover:bg-primary/10 active:scale-95 transition-all">
+                Edit
+            </button>
+</div>
+</div>
+<!-- Main Content: Category List -->
+<main class="flex-1 overflow-y-auto w-full max-w-md mx-auto px-4 py-6 pb-32">
+<!-- Hint/Description -->
+<p class="mb-6 px-1 text-sm text-gray-500 dark:text-gray-400">
+            Swipe left on a category to delete. Tap to edit details.
+        </p>
+<!-- List Container -->
+<div class="flex flex-col space-y-3">
+<!-- Category Item: Food -->
+<div class="group relative flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-white/5 shadow-sm active:scale-[0.99] transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<!-- Icon Container -->
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-500/10 text-orange-500 dark:bg-orange-400/20 dark:text-orange-400">
+<span class="material-symbols-outlined filled">restaurant</span>
+</div>
+<!-- Text -->
+<div class="flex flex-col">
+<span class="text-base font-semibold text-slate-900 dark:text-white">Food &amp; Dining</span>
+<span class="text-xs text-gray-500 dark:text-gray-400">Groceries, Restaurants, Snacks</span>
+</div>
+</div>
+<!-- Edit Icon -->
+<div class="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</div>
+</div>
+<!-- Category Item: Transport -->
+<div class="group relative flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-white/5 shadow-sm active:scale-[0.99] transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500 dark:bg-blue-400/20 dark:text-blue-400">
+<span class="material-symbols-outlined filled">directions_bus</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-semibold text-slate-900 dark:text-white">Transportation</span>
+<span class="text-xs text-gray-500 dark:text-gray-400">Gas, Public Transit, Maintenance</span>
+</div>
+</div>
+<div class="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</div>
+</div>
+<!-- Category Item: Housing -->
+<div class="group relative flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-white/5 shadow-sm active:scale-[0.99] transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 text-purple-500 dark:bg-purple-400/20 dark:text-purple-400">
+<span class="material-symbols-outlined filled">home</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-semibold text-slate-900 dark:text-white">Rent/Mortgage</span>
+<span class="text-xs text-gray-500 dark:text-gray-400">Monthly Bills, Rent</span>
+</div>
+</div>
+<div class="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</div>
+</div>
+<!-- Category Item: Entertainment -->
+<div class="group relative flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-white/5 shadow-sm active:scale-[0.99] transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-pink-500/10 text-pink-500 dark:bg-pink-400/20 dark:text-pink-400">
+<span class="material-symbols-outlined filled">sports_esports</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-semibold text-slate-900 dark:text-white">Entertainment</span>
+<span class="text-xs text-gray-500 dark:text-gray-400">Movies, Games, Events</span>
+</div>
+</div>
+<div class="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</div>
+</div>
+<!-- Category Item: Shopping -->
+<div class="group relative flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-white/5 shadow-sm active:scale-[0.99] transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-teal-500/10 text-teal-500 dark:bg-teal-400/20 dark:text-teal-400">
+<span class="material-symbols-outlined filled">shopping_bag</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-semibold text-slate-900 dark:text-white">Shopping</span>
+<span class="text-xs text-gray-500 dark:text-gray-400">Clothes, Electronics, Gadgets</span>
+</div>
+</div>
+<div class="text-gray-400 dark:text-gray-500 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</div>
+</div>
+<!-- Example of a Swiped Item (Visual Only) -->
+<!-- We simulate the look of an item being swiped left slightly to reveal an action -->
+<div class="relative overflow-hidden rounded-2xl">
+<!-- Background Action Layer -->
+<div class="absolute inset-0 flex items-center justify-end px-4 bg-red-600 rounded-2xl">
+<span class="material-symbols-outlined text-white">delete</span>
+</div>
+<!-- Foreground Content Layer -->
+<div class="relative flex items-center justify-between p-4 bg-white dark:bg-surface-dark border border-gray-100 dark:border-white/5 shadow-sm translate-x-[-60px] cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-500/10 text-gray-500 dark:bg-gray-400/20 dark:text-gray-400">
+<span class="material-symbols-outlined filled">design_services</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-semibold text-slate-900 dark:text-white">Services</span>
+<span class="text-xs text-gray-500 dark:text-gray-400">Subscriptions, Cleaning</span>
+</div>
+</div>
+<div class="text-gray-400 dark:text-gray-500">
+<span class="material-symbols-outlined">edit</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Action Area -->
+<div class="fixed bottom-0 left-0 right-0 z-40 p-4 bg-gradient-to-t from-background-dark via-background-dark to-transparent pt-12">
+<button class="w-full flex items-center justify-center gap-3 bg-primary hover:bg-blue-600 text-white font-bold h-14 rounded-2xl shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">add</span>
+<span>Add New Category</span>
+</button>
+<!-- Home Indicator Area -->
+<div class="h-6 w-full flex justify-center items-end pb-1">
+<div class="h-1.5 w-32 bg-white/20 rounded-full"></div>
+</div>
+</div>
+</body></html>
+
+<!-- Goals Screen - Dark Mode -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Financial Goals</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922", // Keeping theme config but will override for specific "charcoal" look if needed
+                        "surface-dark": "#1e2229",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f1115;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #233648;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #324d67;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen flex flex-col relative pb-24">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-20 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-gray-200 dark:border-white/5 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center text-gray-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 rounded-full w-10 h-10 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Financial Goals</h1>
+</div>
+<button class="flex items-center justify-center text-gray-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 rounded-full w-10 h-10 transition-colors">
+<span class="material-symbols-outlined text-2xl">more_vert</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 px-4 pt-6 flex flex-col gap-6 max-w-lg mx-auto w-full">
+<!-- Stats Section -->
+<section class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1 p-5 rounded-xl bg-white dark:bg-[#1e2229] shadow-sm border border-gray-100 dark:border-white/5">
+<div class="flex items-center gap-2 text-primary mb-2">
+<span class="material-symbols-outlined text-xl">savings</span>
+</div>
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Saved</p>
+<p class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">$12,400</p>
+</div>
+<div class="flex flex-col gap-1 p-5 rounded-xl bg-white dark:bg-[#1e2229] shadow-sm border border-gray-100 dark:border-white/5">
+<div class="flex items-center gap-2 text-emerald-500 mb-2">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+</div>
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Completed</p>
+<p class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">1 Goal</p>
+</div>
+</section>
+<!-- Goals List -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-bold text-gray-900 dark:text-white">Active Goals</h2>
+<span class="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-white/10 px-2 py-1 rounded-full">3 Active</span>
+</div>
+<!-- Goal Card 1: On Track -->
+<article class="group flex flex-col p-5 rounded-xl bg-white dark:bg-[#1e2229] shadow-sm border border-gray-100 dark:border-white/5 transition-transform active:scale-[0.99]">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">flight</span>
+</div>
+<div>
+<h3 class="text-base font-bold text-gray-900 dark:text-white leading-tight">Bali Trip</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mt-1">On Track • 2 months left</p>
+</div>
+</div>
+<div class="flex items-center gap-1 text-primary bg-blue-50 dark:bg-primary/10 px-2 py-1 rounded text-xs font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>75%</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end">
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Saved</p>
+<p class="text-sm font-medium text-gray-900 dark:text-white"><span class="font-bold">$1,500</span> <span class="text-gray-400 font-normal">/ $2,000</span></p>
+</div>
+<!-- Progress Bar -->
+<div class="h-2.5 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 75%"></div>
+</div>
+</div>
+</article>
+<!-- Goal Card 2: Behind (Warning) -->
+<article class="group flex flex-col p-5 rounded-xl bg-white dark:bg-[#1e2229] shadow-sm border border-gray-100 dark:border-white/5 transition-transform active:scale-[0.99]">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-500 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">shield</span>
+</div>
+<div>
+<h3 class="text-base font-bold text-gray-900 dark:text-white leading-tight">Emergency Fund</h3>
+<p class="text-sm text-amber-600 dark:text-amber-500 mt-1 font-medium">Behind • No deadline</p>
+</div>
+</div>
+<div class="flex items-center gap-1 text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded text-xs font-bold">
+<span class="material-symbols-outlined text-sm">warning</span>
+<span>20%</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end">
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Saved</p>
+<p class="text-sm font-medium text-gray-900 dark:text-white"><span class="font-bold">$2,000</span> <span class="text-gray-400 font-normal">/ $10,000</span></p>
+</div>
+<!-- Progress Bar -->
+<div class="h-2.5 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-amber-500 rounded-full" style="width: 20%"></div>
+</div>
+</div>
+</article>
+<!-- Goal Card 3: Completed (Success) -->
+<article class="group flex flex-col p-5 rounded-xl bg-white dark:bg-[#1e2229] shadow-sm border border-emerald-500/20 dark:border-emerald-500/30 transition-transform active:scale-[0.99] relative overflow-hidden">
+<!-- Success decorative gradient -->
+<div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full pointer-events-none"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">laptop_mac</span>
+</div>
+<div>
+<h3 class="text-base font-bold text-gray-900 dark:text-white leading-tight">New Laptop</h3>
+<p class="text-sm text-emerald-600 dark:text-emerald-400 mt-1 font-medium">Goal Met!</p>
+</div>
+</div>
+<div class="flex items-center gap-1 text-white bg-emerald-500 px-2 py-1 rounded text-xs font-bold shadow-sm shadow-emerald-500/20">
+<span class="material-symbols-outlined text-sm">check</span>
+<span>105%</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 relative z-10">
+<div class="flex justify-between items-end">
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Saved</p>
+<p class="text-sm font-medium text-gray-900 dark:text-white"><span class="font-bold">$2,100</span> <span class="text-gray-400 font-normal">/ $2,000</span></p>
+</div>
+<!-- Progress Bar -->
+<div class="h-2.5 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+</article>
+</section>
+</main>
+<!-- Floating Action Button Area -->
+<div class="fixed bottom-0 left-0 w-full p-4 bg-gradient-to-t from-background-light via-background-light/95 to-transparent dark:from-background-dark dark:via-background-dark/95 dark:to-transparent pointer-events-none flex justify-center pb-8 z-30">
+<button class="pointer-events-auto shadow-lg shadow-primary/30 flex items-center justify-center gap-2 bg-primary hover:bg-blue-600 text-white font-bold h-14 px-8 rounded-full transition-all active:scale-95 w-full max-w-sm">
+<span class="material-symbols-outlined">add</span>
+            Create New Goal
+        </button>
+</div>
+</body></html>
+
+<!-- Add Income / Expense - Dark Mode -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add Income / Expense</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+              "surface-dark": "#1c2732",
+              "surface-light": "#ffffff",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased min-h-screen flex flex-col overflow-hidden selection:bg-primary/30">
+<!-- Top App Bar -->
+<div class="flex items-center justify-between px-4 py-3 shrink-0 bg-background-light dark:bg-background-dark z-20">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-slate-200 dark:hover:bg-white/5 transition-colors text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h2 class="text-lg font-bold tracking-tight">Add Transaction</h2>
+<div class="size-10"></div> <!-- Spacer for alignment -->
+</div>
+<!-- Main Content Area -->
+<div class="flex-1 overflow-y-auto no-scrollbar flex flex-col relative w-full max-w-md mx-auto">
+<!-- Segmented Control -->
+<div class="px-6 py-4 sticky top-0 bg-background-light dark:bg-background-dark z-10">
+<div class="flex h-12 w-full items-center justify-center rounded-xl bg-slate-200 dark:bg-surface-dark p-1">
+<label class="flex h-full grow cursor-pointer items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-[#2c3b4a] has-[:checked]:shadow-sm text-slate-500 dark:text-slate-400 has-[:checked]:text-primary dark:has-[:checked]:text-white transition-all duration-200">
+<span class="text-sm font-semibold">Expense</span>
+<input checked="" class="sr-only" name="transaction-type" type="radio" value="Expense"/>
+</label>
+<label class="flex h-full grow cursor-pointer items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-[#2c3b4a] has-[:checked]:shadow-sm text-slate-500 dark:text-slate-400 has-[:checked]:text-primary dark:has-[:checked]:text-white transition-all duration-200">
+<span class="text-sm font-semibold">Income</span>
+<input class="sr-only" name="transaction-type" type="radio" value="Income"/>
+</label>
+</div>
+</div>
+<!-- Hero Amount Input -->
+<div class="flex flex-col items-center justify-center py-6 pb-10">
+<p class="text-slate-400 dark:text-slate-500 text-sm font-medium mb-2 uppercase tracking-wider">Total Amount</p>
+<div class="relative flex items-baseline justify-center gap-1 group">
+<span class="text-4xl font-bold text-slate-400 dark:text-slate-600 self-start mt-2">$</span>
+<input class="bg-transparent border-none p-0 text-center text-[64px] leading-none font-bold text-slate-900 dark:text-white focus:ring-0 w-[280px] caret-primary placeholder-slate-300 dark:placeholder-slate-700" inputmode="decimal" placeholder="0.00" type="text" value="84.50"/>
+</div>
+</div>
+<!-- Category Selector (Chips) -->
+<div class="space-y-3 mb-8 pl-6">
+<div class="flex justify-between items-center pr-6">
+<h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Category</h3>
+<button class="text-primary text-sm font-medium hover:text-blue-400">See all</button>
+</div>
+<div class="flex gap-3 overflow-x-auto no-scrollbar pb-2 pr-6">
+<!-- Selected Chip -->
+<label class="cursor-pointer shrink-0">
+<input checked="" class="peer sr-only" name="category" type="radio"/>
+<div class="flex h-11 items-center gap-x-2 rounded-full bg-slate-200 dark:bg-surface-dark pl-3 pr-5 border border-transparent peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-primary/25 transition-all">
+<span class="material-symbols-outlined text-[20px]">lunch_dining</span>
+<span class="text-sm font-semibold">Food</span>
+</div>
+</label>
+<!-- Unselected Chips -->
+<label class="cursor-pointer shrink-0">
+<input class="peer sr-only" name="category" type="radio"/>
+<div class="flex h-11 items-center gap-x-2 rounded-full bg-slate-200 dark:bg-surface-dark pl-3 pr-5 border border-transparent hover:bg-slate-300 dark:hover:bg-[#253240] peer-checked:bg-primary peer-checked:text-white transition-all text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[20px]">directions_car</span>
+<span class="text-sm font-medium">Transport</span>
+</div>
+</label>
+<label class="cursor-pointer shrink-0">
+<input class="peer sr-only" name="category" type="radio"/>
+<div class="flex h-11 items-center gap-x-2 rounded-full bg-slate-200 dark:bg-surface-dark pl-3 pr-5 border border-transparent hover:bg-slate-300 dark:hover:bg-[#253240] peer-checked:bg-primary peer-checked:text-white transition-all text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+<span class="text-sm font-medium">Shopping</span>
+</div>
+</label>
+<label class="cursor-pointer shrink-0">
+<input class="peer sr-only" name="category" type="radio"/>
+<div class="flex h-11 items-center gap-x-2 rounded-full bg-slate-200 dark:bg-surface-dark pl-3 pr-5 border border-transparent hover:bg-slate-300 dark:hover:bg-[#253240] peer-checked:bg-primary peer-checked:text-white transition-all text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+<span class="text-sm font-medium">Bills</span>
+</div>
+</label>
+<label class="cursor-pointer shrink-0">
+<input class="peer sr-only" name="category" type="radio"/>
+<div class="flex h-11 items-center gap-x-2 rounded-full bg-slate-200 dark:bg-surface-dark pl-3 pr-5 border border-transparent hover:bg-slate-300 dark:hover:bg-[#253240] peer-checked:bg-primary peer-checked:text-white transition-all text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[20px]">movie</span>
+<span class="text-sm font-medium">Entertainment</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Details List -->
+<div class="px-6 space-y-3 mb-24">
+<!-- Date Row -->
+<div class="group flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-surface-dark cursor-pointer shadow-sm border border-slate-100 dark:border-white/5 hover:border-primary/30 dark:hover:border-primary/50 transition-all">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-500/10 shrink-0 size-10 text-primary">
+<span class="material-symbols-outlined">calendar_month</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Date</span>
+<span class="text-base font-semibold text-slate-900 dark:text-white">Today, Oct 24</span>
+</div>
+</div>
+<div class="text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit_calendar</span>
+</div>
+</div>
+<!-- Payment Mode Row -->
+<div class="group flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-surface-dark cursor-pointer shadow-sm border border-slate-100 dark:border-white/5 hover:border-primary/30 dark:hover:border-primary/50 transition-all">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-500/10 shrink-0 size-10 text-purple-600 dark:text-purple-400">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Payment Mode</span>
+<span class="text-base font-semibold text-slate-900 dark:text-white">Main Wallet</span>
+</div>
+</div>
+<div class="text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+<!-- Notes Row -->
+<div class="group flex items-start gap-4 p-4 rounded-2xl bg-white dark:bg-surface-dark shadow-sm border border-slate-100 dark:border-white/5 focus-within:border-primary/50 transition-all">
+<div class="flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 shrink-0 size-10 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div class="flex-1 pt-1">
+<input class="w-full bg-transparent border-none p-0 text-base font-normal text-slate-900 dark:text-white placeholder-slate-400 focus:ring-0 leading-relaxed" placeholder="Add a note..." type="text"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Action Button Area -->
+<div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-white via-white to-transparent dark:from-background-dark dark:via-background-dark dark:to-transparent pt-12">
+<button class="w-full h-14 bg-primary hover:bg-blue-600 text-white font-bold text-lg rounded-2xl shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3 transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined">check_circle</span>
+<span>Save Transaction</span>
+</button>
+</div>
+</body></html>
+
+<!-- Home (Dashboard) - Dark Mode -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Expense Tracker Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Hide scrollbar for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Smooth fade for elements */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#111a22] dark:text-white font-display overflow-x-hidden antialiased selection:bg-primary/30">
+<!-- Mobile Container Wrapper -->
+<div class="relative flex min-h-screen w-full flex-col mx-auto max-w-md shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-20 flex items-center justify-between bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md p-5 pb-2 transition-all">
+<div class="flex items-center gap-3">
+<div class="relative group cursor-pointer">
+<div class="size-10 rounded-full bg-cover bg-center border border-[#324d67] shadow-sm" data-alt="Profile picture of user Alex smiling" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGwdbVKOd1Y3Bsg1gIH5yVwZYRFS-xlHxDpD4izQ-OXTb2VHBr9B92IzVWiODZIhIEBSerxGWwL5gWOQY-u2R_i0xaa7vF8rKxZ6U8gS5X7IJ6QYKjwyxFXC-qC5UkPcOzc2P4ArWZrpfqP3NlE_61FakbDZhvmnZAJqNLTPHj-2SV5iUlWYdVRdEG0tvfvMgzPY8oqBz4RsMgBHXE-1VwEnTDGLO1Joc_fONV99c1mjDQw_UX2qi5-qXA_QbHsvL88qCFRhLLG1v6");'></div>
+<div class="absolute bottom-0 right-0 size-2.5 rounded-full bg-green-500 border-2 border-[#111a22]"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-medium text-[#92adc9] uppercase tracking-wide">Good Evening</span>
+<h2 class="text-lg font-bold leading-tight">Alex</h2>
+</div>
+</div>
+<button class="flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-[#192633] text-white transition-colors">
+<span class="material-symbols-outlined text-[#92adc9] hover:text-white">settings</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col gap-6 px-5 pt-4 pb-32">
+<!-- Total Balance Card -->
+<section class="animate-fade-in">
+<div class="relative overflow-hidden w-full rounded-2xl bg-gradient-to-br from-primary to-[#0f67be] p-6 shadow-lg shadow-primary/20 group">
+<!-- Decorative subtle patterns -->
+<div class="absolute -right-6 -top-6 size-32 rounded-full bg-white/10 blur-3xl group-hover:bg-white/15 transition-colors duration-500"></div>
+<div class="absolute -left-6 -bottom-6 size-32 rounded-full bg-black/20 blur-3xl"></div>
+<div class="relative z-10 flex flex-col gap-6">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<p class="text-blue-100 text-sm font-medium tracking-wide">Total Balance</p>
+<p class="text-white text-[32px] font-bold tracking-tight leading-none">$14,250.00</p>
+</div>
+<div class="flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 backdrop-blur-md border border-white/10 shadow-sm">
+<span class="material-symbols-outlined text-green-300 text-[16px]">trending_up</span>
+<span class="text-xs font-bold text-white">+2.5%</span>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex items-center gap-2">
+<span class="flex h-2 w-2 rounded-full bg-green-400"></span>
+<p class="text-xs text-blue-100 font-medium">Updated just now</p>
+</div>
+<div class="h-8 w-12 opacity-50 bg-[url('https://placeholder.pics/svg/100')] bg-contain bg-no-repeat bg-right" data-alt="Abstract chip card icon"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Monthly Summary Grid -->
+<section class="grid grid-cols-2 gap-4 animate-fade-in" style="animation-delay: 0.1s;">
+<!-- Income Card -->
+<div class="flex flex-col gap-4 rounded-2xl bg-[#192633] p-5 border border-[#324d67]/30 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 p-3 opacity-10">
+<span class="material-symbols-outlined text-4xl">arrow_upward</span>
+</div>
+<div class="flex items-center gap-3 z-10">
+<div class="flex items-center justify-center size-10 rounded-full bg-[#113a28] border border-[#1a5c3d]">
+<span class="material-symbols-outlined text-[#0bda5b] text-[20px]">arrow_upward</span>
+</div>
+<span class="text-sm text-[#92adc9] font-medium">Income</span>
+</div>
+<p class="text-xl font-bold text-white z-10">$4,200</p>
+</div>
+<!-- Expense Card -->
+<div class="flex flex-col gap-4 rounded-2xl bg-[#192633] p-5 border border-[#324d67]/30 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 p-3 opacity-10">
+<span class="material-symbols-outlined text-4xl">arrow_downward</span>
+</div>
+<div class="flex items-center gap-3 z-10">
+<div class="flex items-center justify-center size-10 rounded-full bg-[#3a1d1d] border border-[#5c2b2b]">
+<span class="material-symbols-outlined text-[#ff4d4d] text-[20px]">arrow_downward</span>
+</div>
+<span class="text-sm text-[#92adc9] font-medium">Expense</span>
+</div>
+<p class="text-xl font-bold text-white z-10">$1,850</p>
+</div>
+</section>
+<!-- Recent Transactions Section -->
+<section class="flex flex-col gap-4 animate-fade-in" style="animation-delay: 0.2s;">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-lg font-bold text-white tracking-tight">Recent Transactions</h3>
+<a class="group flex items-center gap-1 text-sm font-semibold text-primary hover:text-blue-400 transition-colors" href="#">
+                        View All
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+</a>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Item 1: Starbucks -->
+<div class="flex items-center justify-between rounded-2xl bg-[#192633] p-4 border border-[#324d67]/20 hover:bg-[#233648] hover:border-[#324d67]/50 transition-all cursor-pointer group active:scale-[0.99]">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-12 rounded-xl bg-[#233648] text-white group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">local_cafe</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<p class="text-base font-semibold text-white group-hover:text-primary transition-colors">Starbucks</p>
+<p class="text-xs text-[#92adc9]">Today, 08:30 AM</p>
+</div>
+</div>
+<p class="text-base font-bold text-white">-$5.50</p>
+</div>
+<!-- Item 2: Uber -->
+<div class="flex items-center justify-between rounded-2xl bg-[#192633] p-4 border border-[#324d67]/20 hover:bg-[#233648] hover:border-[#324d67]/50 transition-all cursor-pointer group active:scale-[0.99]">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-12 rounded-xl bg-[#233648] text-white group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">directions_car</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<p class="text-base font-semibold text-white group-hover:text-primary transition-colors">Uber</p>
+<p class="text-xs text-[#92adc9]">Yesterday, 06:15 PM</p>
+</div>
+</div>
+<p class="text-base font-bold text-white">-$14.20</p>
+</div>
+<!-- Item 3: Apple Music -->
+<div class="flex items-center justify-between rounded-2xl bg-[#192633] p-4 border border-[#324d67]/20 hover:bg-[#233648] hover:border-[#324d67]/50 transition-all cursor-pointer group active:scale-[0.99]">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-12 rounded-xl bg-[#233648] text-white group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">music_note</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<p class="text-base font-semibold text-white group-hover:text-primary transition-colors">Apple Music</p>
+<p class="text-xs text-[#92adc9]">Oct 24, 2023</p>
+</div>
+</div>
+<p class="text-base font-bold text-white">-$10.99</p>
+</div>
+<!-- Item 4: Grocery -->
+<div class="flex items-center justify-between rounded-2xl bg-[#192633] p-4 border border-[#324d67]/20 hover:bg-[#233648] hover:border-[#324d67]/50 transition-all cursor-pointer group active:scale-[0.99]">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-12 rounded-xl bg-[#233648] text-white group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">shopping_cart</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<p class="text-base font-semibold text-white group-hover:text-primary transition-colors">Whole Foods</p>
+<p class="text-xs text-[#92adc9]">Oct 22, 2023</p>
+</div>
+</div>
+<p class="text-base font-bold text-white">-$86.45</p>
+</div>
+<!-- Item 5: Gym -->
+<div class="flex items-center justify-between rounded-2xl bg-[#192633] p-4 border border-[#324d67]/20 hover:bg-[#233648] hover:border-[#324d67]/50 transition-all cursor-pointer group active:scale-[0.99]">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-12 rounded-xl bg-[#233648] text-white group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<p class="text-base font-semibold text-white group-hover:text-primary transition-colors">City Gym</p>
+<p class="text-xs text-[#92adc9]">Oct 21, 2023</p>
+</div>
+</div>
+<p class="text-base font-bold text-white">-$45.00</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button & Bottom Nav Container -->
+<!-- Using a fixed container centered on viewport but constrained to max-w-md to match the app shell -->
+<div class="fixed bottom-0 left-0 w-full z-30 flex justify-center pointer-events-none">
+<div class="w-full max-w-md relative h-24 pointer-events-auto">
+<!-- FAB -->
+<button class="absolute -top-6 right-6 flex items-center justify-center size-14 rounded-full bg-primary shadow-[0_8px_30px_rgb(19,127,236,0.4)] hover:bg-blue-500 hover:scale-110 active:scale-95 transition-all z-40 group">
+<span class="material-symbols-outlined text-white text-[32px] group-hover:rotate-90 transition-transform duration-300">add</span>
+</button>
+<!-- Navigation Bar -->
+<nav class="absolute bottom-0 w-full h-[84px] bg-[#111a22]/90 backdrop-blur-xl border-t border-[#324d67]/30 pb-5 pt-3 px-6 rounded-t-2xl">
+<div class="flex items-center justify-between h-full">
+<button class="flex flex-col items-center gap-1.5 text-primary w-16 group">
+<span class="material-symbols-outlined fill-1 text-[26px] group-hover:-translate-y-1 transition-transform">home</span>
+<span class="text-[10px] font-bold tracking-wide">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1.5 text-[#92adc9] w-16 hover:text-white transition-colors group">
+<span class="material-symbols-outlined text-[26px] group-hover:-translate-y-1 transition-transform">bar_chart</span>
+<span class="text-[10px] font-medium tracking-wide">Stats</span>
+</button>
+<button class="flex flex-col items-center gap-1.5 text-[#92adc9] w-16 hover:text-white transition-colors group">
+<span class="material-symbols-outlined text-[26px] group-hover:-translate-y-1 transition-transform">account_balance_wallet</span>
+<span class="text-[10px] font-medium tracking-wide">Budget</span>
+</button>
+<button class="flex flex-col items-center gap-1.5 text-[#92adc9] w-16 hover:text-white transition-colors group">
+<div class="size-6 rounded-full overflow-hidden border-2 border-transparent group-hover:border-white transition-colors">
+<div class="w-full h-full bg-cover bg-center" data-alt="Small profile avatar for nav" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDVy_ejY6-o3rL2crgQPn7Qwhaqk6vKLHhCul4ds5MOy-Z0XNaKK-BfMGJ1HtNPPWuFBEw9b-uGYd4XS8R9-Y3mtteasPId6ipql4STVTP1iYLl1ic0kEZoJqEnamJyJ8piOCQQxouT1WsGIuVQ9bjnVp6M1cVnawU4Pid62HeTuP9iAvif8m1UrbVEdr_K4mUc_yd1E6SclgnHPxVp3Qq82JvAvnDXITN-MKdv607a1oz-IxoibvenhAD-6ECA4N7f-X-ffBO01O8X");'></div>
+</div>
+<span class="text-[10px] font-medium tracking-wide">Profile</span>
+</button>
+</div>
+</nav>
+</div>
+</div>
+</div>
+</body></html>
+
+<!-- Transactions Screen - Dark Mode -->
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transactions - Dark Mode</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+              "surface-dark": "#1C2733",
+              "surface-darker": "#16202a",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>.no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .material-symbols-outlined.filled {
+          font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased overflow-hidden">
+<div class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl overflow-hidden bg-background-light dark:bg-background-dark">
+<header class="flex items-center px-4 py-4 pt-12 pb-2 justify-between z-10 bg-background-light dark:bg-background-dark sticky top-0">
+<button class="text-slate-900 dark:text-white flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Transactions</h2>
+<button class="text-slate-900 dark:text-white flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+</header>
+<div class="flex-1 overflow-y-auto pb-24 relative no-scrollbar">
+<div class="px-4 py-4">
+<div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1C2733] to-[#16202a] p-6 border border-slate-700/30 shadow-lg">
+<div class="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-primary/10 blur-2xl"></div>
+<div class="absolute -left-6 -bottom-6 h-32 w-32 rounded-full bg-blue-500/10 blur-2xl"></div>
+<div class="relative flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<p class="text-slate-400 text-sm font-medium">Total Balance</p>
+<h1 class="text-white text-3xl font-bold tracking-tight">$12,450.00</h1>
+<div class="mt-2 flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-1 w-fit">
+<span class="material-symbols-outlined text-emerald-400 text-[16px]">trending_up</span>
+<span class="text-emerald-400 text-xs font-semibold">+2.5% vs last month</span>
+</div>
+</div>
+<button class="group flex flex-col items-center gap-1.5 rounded-xl p-2 pl-4 hover:bg-white/5 transition-colors">
+<div class="flex size-11 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/25 ring-2 ring-primary/20 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[22px]">insights</span>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 group-hover:text-white transition-colors">Analytics</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex gap-3 px-4 pb-4 overflow-x-auto no-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5 shadow-lg shadow-primary/20">
+<span class="text-white text-sm font-semibold">All</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 px-5 transition-colors hover:bg-slate-100 dark:hover:bg-surface-darker">
+<span class="text-slate-600 dark:text-slate-300 text-sm font-medium">Income</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 px-5 transition-colors hover:bg-slate-100 dark:hover:bg-surface-darker">
+<span class="text-slate-600 dark:text-slate-300 text-sm font-medium">Expense</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 px-5 transition-colors hover:bg-slate-100 dark:hover:bg-surface-darker">
+<span class="text-slate-600 dark:text-slate-300 text-sm font-medium">Date Range</span>
+</button>
+</div>
+<div class="mb-4">
+<div class="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm px-4 py-2 border-b border-slate-200/50 dark:border-slate-800/50">
+<h4 class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Today, Oct 24</h4>
+</div>
+<div class="flex flex-col">
+<div class="group flex items-center gap-4 px-4 py-4 hover:bg-slate-100 dark:hover:bg-surface-dark/50 transition-colors cursor-pointer border-b border-slate-200 dark:border-slate-800 last:border-0">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400">
+<span class="material-symbols-outlined">coffee</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-slate-900 dark:text-white text-base font-semibold leading-none mb-1">Starbucks</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">9:41 AM • Food &amp; Drink</p>
+</div>
+<div class="shrink-0 text-right">
+<p class="text-slate-900 dark:text-white text-base font-semibold">-$5.50</p>
+</div>
+</div>
+<div class="group flex items-center gap-4 px-4 py-4 hover:bg-slate-100 dark:hover:bg-surface-dark/50 transition-colors cursor-pointer border-b border-slate-200 dark:border-slate-800 last:border-0">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-primary/20 text-primary dark:text-blue-400">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-slate-900 dark:text-white text-base font-semibold leading-none mb-1">Upwork Payout</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">2:30 PM • Freelance</p>
+</div>
+<div class="shrink-0 text-right">
+<p class="text-emerald-600 dark:text-emerald-400 text-base font-semibold">+$450.00</p>
+</div>
+</div>
+<div class="group flex items-center gap-4 px-4 py-4 hover:bg-slate-100 dark:hover:bg-surface-dark/50 transition-colors cursor-pointer">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">subscriptions</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-slate-900 dark:text-white text-base font-semibold leading-none mb-1">Apple Services</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">10:00 AM • Entertainment</p>
+</div>
+<div class="shrink-0 text-right">
+<p class="text-slate-900 dark:text-white text-base font-semibold">-$14.99</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-4">
+<div class="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm px-4 py-2 border-b border-slate-200/50 dark:border-slate-800/50">
+<h4 class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Yesterday, Oct 23</h4>
+</div>
+<div class="flex flex-col">
+<div class="group flex items-center gap-4 px-4 py-4 hover:bg-slate-100 dark:hover:bg-surface-dark/50 transition-colors cursor-pointer border-b border-slate-200 dark:border-slate-800 last:border-0">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400">
+<span class="material-symbols-outlined">shopping_cart</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-slate-900 dark:text-white text-base font-semibold leading-none mb-1">Whole Foods Market</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">6:15 PM • Groceries</p>
+</div>
+<div class="shrink-0 text-right">
+<p class="text-slate-900 dark:text-white text-base font-semibold">-$82.12</p>
+</div>
+</div>
+<div class="group flex items-center gap-4 px-4 py-4 hover:bg-slate-100 dark:hover:bg-surface-dark/50 transition-colors cursor-pointer">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400">
+<span class="material-symbols-outlined">local_taxi</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-slate-900 dark:text-white text-base font-semibold leading-none mb-1">Uber Ride</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">8:45 AM • Transport</p>
+</div>
+<div class="shrink-0 text-right">
+<p class="text-slate-900 dark:text-white text-base font-semibold">-$12.50</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-4">
+<div class="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm px-4 py-2 border-b border-slate-200/50 dark:border-slate-800/50">
+<h4 class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Oct 21, 2023</h4>
+</div>
+<div class="flex flex-col">
+<div class="group flex items-center gap-4 px-4 py-4 hover:bg-slate-100 dark:hover:bg-surface-dark/50 transition-colors cursor-pointer border-b border-slate-200 dark:border-slate-800 last:border-0">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400">
+<span class="material-symbols-outlined">movie</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-slate-900 dark:text-white text-base font-semibold leading-none mb-1">Netflix Subscription</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">11:00 AM • Entertainment</p>
+</div>
+<div class="shrink-0 text-right">
+<p class="text-slate-900 dark:text-white text-base font-semibold">-$15.99</p>
+</div>
+</div>
+<div class="group flex items-center gap-4 px-4 py-4 hover:bg-slate-100 dark:hover:bg-surface-dark/50 transition-colors cursor-pointer">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-teal-100 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-slate-900 dark:text-white text-base font-semibold leading-none mb-1">Gold's Gym</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">6:00 PM • Health</p>
+</div>
+<div class="shrink-0 text-right">
+<p class="text-slate-900 dark:text-white text-base font-semibold">-$45.00</p>
+</div>
+</div>
+</div>
+</div>
+<div class="h-12"></div>
+</div>
+<nav class="sticky bottom-0 z-30 w-full bg-white dark:bg-[#16202a] border-t border-slate-200 dark:border-slate-800 pb-5">
+<div class="flex items-center justify-around px-2 pt-3 relative">
+<button class="group flex flex-col items-center gap-1 min-w-[64px]">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">home</span>
+<span class="text-[10px] font-medium text-slate-400 group-hover:text-primary transition-colors">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 min-w-[64px]">
+<span class="material-symbols-outlined filled text-primary">receipt_long</span>
+<span class="text-[10px] font-medium text-primary">Transactions</span>
+</button>
+<div class="w-12"></div>
+<button class="group flex flex-col items-center gap-1 min-w-[64px]">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">pie_chart</span>
+<span class="text-[10px] font-medium text-slate-400 group-hover:text-primary transition-colors">Budget</span>
+</button>
+<button class="group flex flex-col items-center gap-1 min-w-[64px]">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">person</span>
+<span class="text-[10px] font-medium text-slate-400 group-hover:text-primary transition-colors">Profile</span>
+</button>
+<button class="absolute -top-7 left-1/2 -translate-x-1/2 flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-xl shadow-primary/40 ring-4 ring-white dark:ring-[#16202a] hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-white text-2xl">add</span>
+</button>
+</div>
+</nav>
+</div>
+
+</body></html>
+
+<!-- Profile & Settings - Dark Mode -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile &amp; Settings - Dark Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-dark": "#1b2733",
+                        "surface-hover": "#23303e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101922;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #233648;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #137fec;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased overflow-x-hidden selection:bg-primary selection:text-white">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-xl">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-background-light dark:bg-background-dark/95 backdrop-blur-sm border-b border-gray-200 dark:border-white/5">
+<button class="flex items-center justify-center p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">Profile &amp; Settings</h1>
+</header>
+<main class="flex-1 flex flex-col gap-6 p-4 pb-24">
+<!-- Profile Header -->
+<section class="flex flex-col items-center gap-4 py-2">
+<div class="relative group cursor-pointer">
+<div class="h-24 w-24 rounded-full bg-cover bg-center border-4 border-white dark:border-surface-dark shadow-lg transition-transform transform group-hover:scale-105" data-alt="User profile avatar showing a smiling person" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAUie77c6D7-wps-90Lzua1exvRbJSwfPRpCpmBxnru-_X-KIq1fQzjp9eTU0FIROSBBbl1DtQJiKoAMV24JfmDm89IOC_CN1CPyjCM2z1mlthlEp8aFnEEyzHEh1UmjMl5o_EXAE7bqfHBHnUtiz8UkTQesGvGRu5QM_EzmzRYh48XcBVOL71iZouM3ApbNOr8jzfmjV6h4FnNT8OzURZscdtbV6wYce4qNjCuMYdX28MRm1ttpKv0EpvdJQtaE7PG8HBx601afR_P");'>
+</div>
+<div class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-1.5 shadow-md border-2 border-white dark:border-background-dark flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</div>
+</div>
+<div class="text-center">
+<h2 class="text-xl font-bold dark:text-white">Alex Doe</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5">alex.doe@example.com</p>
+<div class="mt-3 inline-flex items-center px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
+                        Pro Member
+                    </div>
+</div>
+</section>
+<!-- Group 1: Account -->
+<section class="flex flex-col gap-2">
+<h3 class="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest px-2">Account</h3>
+<div class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5">
+<!-- Item -->
+<button class="w-full flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors text-left group">
+<div class="flex items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0 size-10">
+<span class="material-symbols-outlined">currency_exchange</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-slate-900 dark:text-white truncate">Default Currency</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm text-slate-500 dark:text-slate-400">USD ($)</span>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-600 text-[20px]">chevron_right</span>
+</div>
+</button>
+<div class="h-px bg-slate-100 dark:bg-white/5 mx-4"></div>
+<!-- Item -->
+<button class="w-full flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors text-left group">
+<div class="flex items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0 size-10">
+<span class="material-symbols-outlined">credit_card</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-slate-900 dark:text-white truncate">Subscription Plan</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm text-slate-500 dark:text-slate-400">Pro</span>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-600 text-[20px]">chevron_right</span>
+</div>
+</button>
+</div>
+</section>
+<!-- Group 2: Preferences -->
+<section class="flex flex-col gap-2">
+<h3 class="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest px-2">Preferences</h3>
+<div class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5">
+<!-- Item: Theme -->
+<button class="w-full flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors text-left group">
+<div class="flex items-center justify-center rounded-lg bg-purple-500/10 text-purple-500 shrink-0 size-10">
+<span class="material-symbols-outlined">dark_mode</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-slate-900 dark:text-white truncate">Appearance</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm text-slate-500 dark:text-slate-400">Dark Mode</span>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-600 text-[20px]">chevron_right</span>
+</div>
+</button>
+<div class="h-px bg-slate-100 dark:bg-white/5 mx-4"></div>
+<!-- Item: Notifications -->
+<div class="w-full flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors">
+<div class="flex items-center justify-center rounded-lg bg-yellow-500/10 text-yellow-500 shrink-0 size-10">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-slate-900 dark:text-white truncate">Notifications</p>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 dark:peer-focus:ring-primary/30 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Group 3: Budgeting -->
+<section class="flex flex-col gap-2">
+<h3 class="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest px-2">Budgeting</h3>
+<div class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5">
+<!-- Item -->
+<button class="w-full flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors text-left group">
+<div class="flex items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 shrink-0 size-10">
+<span class="material-symbols-outlined">savings</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-slate-900 dark:text-white truncate">Monthly Limit</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-medium text-slate-900 dark:text-white">$2,500.00</span>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-600 text-[20px]">edit</span>
+</div>
+</button>
+<div class="h-px bg-slate-100 dark:bg-white/5 mx-4"></div>
+<!-- Item -->
+<button class="w-full flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors text-left group">
+<div class="flex items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 shrink-0 size-10">
+<span class="material-symbols-outlined">calendar_month</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-slate-900 dark:text-white truncate">Start of Month</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm text-slate-500 dark:text-slate-400">1st</span>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-600 text-[20px]">chevron_right</span>
+</div>
+</button>
+</div>
+</section>
+<!-- Group 4: Data & Backup -->
+<section class="flex flex-col gap-2">
+<h3 class="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest px-2">Data &amp; Backup</h3>
+<div class="bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-white/5">
+<!-- Item -->
+<button class="w-full flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors text-left group">
+<div class="flex items-center justify-center rounded-lg bg-slate-500/10 text-slate-500 dark:text-slate-400 shrink-0 size-10">
+<span class="material-symbols-outlined">cloud_upload</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-slate-900 dark:text-white truncate">Backup Frequency</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm text-slate-500 dark:text-slate-400">Daily</span>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-600 text-[20px]">chevron_right</span>
+</div>
+</button>
+<div class="h-px bg-slate-100 dark:bg-white/5 mx-4"></div>
+<!-- Item -->
+<button class="w-full flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors text-left group">
+<div class="flex items-center justify-center rounded-lg bg-slate-500/10 text-slate-500 dark:text-slate-400 shrink-0 size-10">
+<span class="material-symbols-outlined">download</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-slate-900 dark:text-white truncate">Export Data</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm text-slate-500 dark:text-slate-400">CSV / PDF</span>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-600 text-[20px]">chevron_right</span>
+</div>
+</button>
+</div>
+</section>
+<!-- Footer Actions -->
+<div class="mt-4 flex flex-col gap-3">
+<button class="w-full py-3.5 px-4 bg-white dark:bg-surface-dark border border-gray-100 dark:border-white/5 rounded-xl text-red-500 font-bold text-sm hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+                    Log Out
+                </button>
+<div class="flex justify-center items-center py-4">
+<p class="text-xs text-slate-400 dark:text-slate-600 font-medium">App Version 1.4.2 (Build 204)</p>
+</div>
+</div>
+</main>
+</div>
+</body></html>
+
+<!-- Create / Edit Goal - Dark Mode -->
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Create Goal</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#137fec",
+                "background-light": "#f6f7f8",
+                "background-dark": "#101922", // Deep charcoal/black
+                "surface-dark": "#1e293b", // Lighter slate for cards
+                "input-bg": "#233648", // From examples
+              },
+              fontFamily: {
+                "display": ["Inter", "sans-serif"],
+                "sans": ["Inter", "sans-serif"],
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-white h-screen overflow-hidden flex flex-col">
+<div class="relative flex h-full w-full flex-col overflow-y-auto overflow-x-hidden">
+<div class="flex items-center px-4 py-4 justify-between sticky top-0 z-10 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
+<button class="text-primary flex shrink-0 items-center justify-center min-w-[44px] min-h-[44px] -ml-2">
+<span class="material-symbols-outlined text-3xl">arrow_back</span>
+</button>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] text-center">New Goal</h2>
+<div class="w-[44px]"></div>
+</div>
+<div class="flex-1 flex flex-col px-4 pb-32">
+<div class="py-4">
+<div class="flex h-12 w-full items-center justify-center rounded-xl bg-input-bg p-1">
+<label class="group flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-primary has-[:checked]:shadow-md transition-all duration-200">
+<span class="truncate text-slate-400 group-has-[:checked]:text-white text-sm font-semibold leading-normal">Savings</span>
+<input checked="" class="invisible w-0 fixed" name="goal_type" type="radio" value="Savings"/>
+</label>
+<label class="group flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-primary has-[:checked]:shadow-md transition-all duration-200">
+<span class="truncate text-slate-400 group-has-[:checked]:text-white text-sm font-semibold leading-normal">Expense Limit</span>
+<input class="invisible w-0 fixed" name="goal_type" type="radio" value="Expense Limit"/>
+</label>
+</div>
+</div>
+<div class="relative flex flex-col items-center justify-center py-10">
+<div class="absolute inset-0 bg-[radial-gradient(closest-side,rgba(19,127,236,0.15)_0%,rgba(0,0,0,0)_100%)] pointer-events-none"></div>
+<p class="text-slate-400 text-sm font-medium mb-2 relative z-10">Target Amount</p>
+<div class="flex items-center justify-center relative z-10 w-full">
+<input autofocus="" class="w-full bg-transparent border-none text-center text-5xl font-bold text-white placeholder:text-slate-600 focus:ring-0 focus:outline-none p-0 caret-primary" inputmode="decimal" placeholder="$0.00" type="text"/>
+</div>
+</div>
+<div class="bg-input-bg rounded-xl overflow-hidden mt-2 space-y-[1px]">
+<div class="flex flex-col bg-input-bg px-4 py-3">
+<label class="flex flex-col w-full">
+<span class="text-white text-sm font-medium leading-normal pb-1">Goal Name</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-none text-white focus:outline-0 focus:ring-0 border-none bg-transparent h-10 placeholder:text-slate-400 p-0 text-lg font-normal leading-normal" placeholder="e.g. New Laptop" value=""/>
+</label>
+</div>
+<div class="h-px w-full bg-background-dark/30 ml-4"></div>
+<div class="flex items-center gap-4 bg-input-bg px-4 min-h-[64px] justify-between cursor-pointer active:bg-white/5 transition-colors group">
+<div class="flex flex-col justify-center">
+<p class="text-white text-sm font-medium leading-normal">Start Date</p>
+</div>
+<div class="flex items-center gap-2">
+<p class="text-primary text-lg font-normal leading-normal">Today</p>
+<span class="material-symbols-outlined text-slate-500 text-[20px]">calendar_today</span>
+</div>
+</div>
+<div class="h-px w-full bg-background-dark/30 ml-4"></div>
+<div class="flex items-center gap-4 bg-input-bg px-4 min-h-[64px] justify-between cursor-pointer active:bg-white/5 transition-colors group">
+<div class="flex flex-col justify-center">
+<p class="text-white text-sm font-medium leading-normal">Target Date</p>
+</div>
+<div class="flex items-center gap-2">
+<p class="text-slate-400 text-lg font-normal leading-normal">Select Date</p>
+<span class="material-symbols-outlined text-slate-500 text-[20px]">event</span>
+</div>
+</div>
+</div>
+<div class="mt-6 px-2">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-500">notifications</span>
+<p class="text-slate-400 text-sm">You will be notified when you reach 80% of this goal.</p>
+</div>
+</div>
+</div>
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background-dark via-background-dark to-transparent pb-8">
+<button class="flex w-full items-center justify-center rounded-xl bg-primary h-14 px-6 active:bg-blue-600 transition-colors shadow-lg shadow-blue-900/20">
+<span class="text-white text-lg font-semibold tracking-wide">Save Goal</span>
+</button>
+</div>
+</div>
+
+</body></html>
+
+<!-- Analytics / Overview - Dark Mode -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Analytics Overview - Dark Mode</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-dark": "#1c2834",
+                        "surface-light": "#ffffff"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for horizontal scroll areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto border-x border-gray-800 shadow-2xl">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-20 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md px-4 py-3 border-b border-gray-200 dark:border-gray-800">
+<div class="flex items-center justify-between mb-4">
+<button class="flex items-center justify-center p-2 rounded-full text-gray-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight">Analytics</h2>
+<button class="flex items-center justify-center p-2 rounded-full text-gray-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">more_vert</span>
+</button>
+</div>
+<!-- Month Selector -->
+<div class="flex items-center justify-center">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-200 dark:bg-surface-dark text-gray-900 dark:text-white font-semibold text-sm hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg text-gray-500">chevron_left</span>
+<span>September 2023</span>
+<span class="material-symbols-outlined text-lg text-gray-500">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 pb-24 space-y-6">
+<!-- Filter Chips -->
+<div class="flex gap-3 px-4 pt-4 overflow-x-auto no-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary text-white pl-4 pr-5 shadow-lg shadow-primary/20 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-lg">grid_view</span>
+<span class="text-sm font-medium">Overview</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 pl-4 pr-5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-lg text-green-500">arrow_upward</span>
+<span class="text-gray-900 dark:text-gray-300 text-sm font-medium">Income</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 pl-4 pr-5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-lg text-red-500">arrow_downward</span>
+<span class="text-gray-900 dark:text-gray-300 text-sm font-medium">Expense</span>
+</button>
+</div>
+<!-- Summary Cards (Horizontal Scroll) -->
+<div class="flex gap-4 px-4 overflow-x-auto no-scrollbar pb-2">
+<!-- Total Balance -->
+<div class="flex min-w-[200px] flex-col gap-1 rounded-xl p-5 bg-white dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-gray-800">
+<div class="flex items-center gap-2 mb-1">
+<div class="p-1.5 rounded-md bg-primary/10">
+<span class="material-symbols-outlined text-primary text-lg">account_balance_wallet</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wider">Total Balance</p>
+</div>
+<p class="text-gray-900 dark:text-white text-2xl font-bold tracking-tight">$4,250.00</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="flex items-center justify-center size-4 rounded-full bg-green-500/20 text-green-500">
+<span class="material-symbols-outlined text-[10px] font-bold">arrow_upward</span>
+</span>
+<p class="text-green-500 text-xs font-semibold">+12%</p>
+<p class="text-gray-400 text-xs ml-1">vs last month</p>
+</div>
+</div>
+<!-- Total Income -->
+<div class="flex min-w-[200px] flex-col gap-1 rounded-xl p-5 bg-white dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-gray-800">
+<div class="flex items-center gap-2 mb-1">
+<div class="p-1.5 rounded-md bg-green-500/10">
+<span class="material-symbols-outlined text-green-500 text-lg">payments</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wider">Total Income</p>
+</div>
+<p class="text-gray-900 dark:text-white text-2xl font-bold tracking-tight">$6,100.00</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="flex items-center justify-center size-4 rounded-full bg-green-500/20 text-green-500">
+<span class="material-symbols-outlined text-[10px] font-bold">arrow_upward</span>
+</span>
+<p class="text-green-500 text-xs font-semibold">+5%</p>
+<p class="text-gray-400 text-xs ml-1">vs last month</p>
+</div>
+</div>
+<!-- Total Expense -->
+<div class="flex min-w-[200px] flex-col gap-1 rounded-xl p-5 bg-white dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-gray-800">
+<div class="flex items-center gap-2 mb-1">
+<div class="p-1.5 rounded-md bg-red-500/10">
+<span class="material-symbols-outlined text-red-500 text-lg">trending_down</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wider">Total Expense</p>
+</div>
+<p class="text-gray-900 dark:text-white text-2xl font-bold tracking-tight">$1,850.00</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="flex items-center justify-center size-4 rounded-full bg-red-500/20 text-red-500">
+<span class="material-symbols-outlined text-[10px] font-bold">arrow_upward</span>
+</span>
+<p class="text-red-500 text-xs font-semibold">+2%</p>
+<p class="text-gray-400 text-xs ml-1">vs last month</p>
+</div>
+</div>
+</div>
+<!-- Cash Flow Chart -->
+<div class="px-4">
+<div class="flex flex-col gap-4 rounded-xl p-5 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800">
+<div class="flex items-center justify-between">
+<h3 class="text-gray-900 dark:text-white text-base font-bold">Cash Flow</h3>
+<button class="text-primary text-sm font-medium">Details</button>
+</div>
+<div class="grid grid-cols-7 gap-2 h-40 items-end mt-2">
+<!-- Day 1 -->
+<div class="group flex flex-col items-center gap-1 h-full justify-end w-full">
+<div class="w-full bg-primary rounded-t-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 40%"></div>
+<div class="w-full bg-red-500/80 rounded-b-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 20%"></div>
+<span class="text-[10px] font-medium text-gray-400 mt-1">Mon</span>
+</div>
+<!-- Day 2 -->
+<div class="group flex flex-col items-center gap-1 h-full justify-end w-full">
+<div class="w-full bg-primary rounded-t-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 60%"></div>
+<div class="w-full bg-red-500/80 rounded-b-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 15%"></div>
+<span class="text-[10px] font-medium text-gray-400 mt-1">Tue</span>
+</div>
+<!-- Day 3 -->
+<div class="group flex flex-col items-center gap-1 h-full justify-end w-full">
+<div class="w-full bg-primary rounded-t-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 30%"></div>
+<div class="w-full bg-red-500/80 rounded-b-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 40%"></div>
+<span class="text-[10px] font-medium text-gray-400 mt-1">Wed</span>
+</div>
+<!-- Day 4 -->
+<div class="group flex flex-col items-center gap-1 h-full justify-end w-full">
+<div class="w-full bg-primary rounded-t-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 80%"></div>
+<div class="w-full bg-red-500/80 rounded-b-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 10%"></div>
+<span class="text-[10px] font-medium text-gray-400 mt-1">Thu</span>
+</div>
+<!-- Day 5 -->
+<div class="group flex flex-col items-center gap-1 h-full justify-end w-full">
+<div class="w-full bg-primary rounded-t-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 45%"></div>
+<div class="w-full bg-red-500/80 rounded-b-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 35%"></div>
+<span class="text-[10px] font-medium text-gray-400 mt-1">Fri</span>
+</div>
+<!-- Day 6 -->
+<div class="group flex flex-col items-center gap-1 h-full justify-end w-full">
+<div class="w-full bg-primary rounded-t-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 20%"></div>
+<div class="w-full bg-red-500/80 rounded-b-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 60%"></div>
+<span class="text-[10px] font-medium text-gray-400 mt-1">Sat</span>
+</div>
+<!-- Day 7 -->
+<div class="group flex flex-col items-center gap-1 h-full justify-end w-full">
+<div class="w-full bg-primary rounded-t-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 10%"></div>
+<div class="w-full bg-red-500/80 rounded-b-sm opacity-80 group-hover:opacity-100 transition-opacity" style="height: 25%"></div>
+<span class="text-[10px] font-medium text-gray-400 mt-1">Sun</span>
+</div>
+</div>
+<div class="flex justify-center gap-6 mt-2">
+<div class="flex items-center gap-2">
+<div class="size-2.5 rounded-full bg-primary"></div>
+<span class="text-xs text-gray-500 dark:text-gray-400">Income</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-2.5 rounded-full bg-red-500/80"></div>
+<span class="text-xs text-gray-500 dark:text-gray-400">Expense</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Category & Trend Split -->
+<div class="px-4 flex flex-col gap-4">
+<!-- Category Breakdown (Donut) -->
+<div class="flex flex-col rounded-xl p-5 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800">
+<h3 class="text-gray-900 dark:text-white text-base font-bold mb-4">Expense by Category</h3>
+<div class="flex items-center gap-6">
+<!-- CSS Conic Gradient Donut -->
+<div class="relative size-32 shrink-0 rounded-full" style="background: conic-gradient(#137fec 0% 45%, #ec4899 45% 70%, #f59e0b 70% 90%, #10b981 90% 100%);">
+<!-- Hole -->
+<div class="absolute inset-0 m-auto size-20 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center">
+<span class="text-xs font-bold text-gray-500 dark:text-gray-400">Total<br/>$1.8k</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex flex-col gap-3 flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-primary"></div>
+<span class="text-xs font-medium text-gray-600 dark:text-gray-300">Housing</span>
+</div>
+<span class="text-xs font-bold text-gray-900 dark:text-white">45%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-pink-500"></div>
+<span class="text-xs font-medium text-gray-600 dark:text-gray-300">Food</span>
+</div>
+<span class="text-xs font-bold text-gray-900 dark:text-white">25%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-amber-500"></div>
+<span class="text-xs font-medium text-gray-600 dark:text-gray-300">Transport</span>
+</div>
+<span class="text-xs font-bold text-gray-900 dark:text-white">20%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-emerald-500"></div>
+<span class="text-xs font-medium text-gray-600 dark:text-gray-300">Others</span>
+</div>
+<span class="text-xs font-bold text-gray-900 dark:text-white">10%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Daily Trend (Line Chart) -->
+<div class="flex flex-col rounded-xl p-5 bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800">
+<h3 class="text-gray-900 dark:text-white text-base font-bold mb-1">Daily Spending Trend</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Average spending: $62/day</p>
+<div class="relative h-32 w-full">
+<!-- SVG Chart -->
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 50">
+<!-- Gradient Definition -->
+<defs>
+<lineargradient id="gradientArea" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#137fec" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#137fec" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Area -->
+<path d="M0,50 L0,30 C10,25 20,40 30,35 C40,30 50,10 60,15 C70,20 80,5 90,10 L100,20 L100,50 Z" fill="url(#gradientArea)"></path>
+<!-- Line -->
+<path d="M0,30 C10,25 20,40 30,35 C40,30 50,10 60,15 C70,20 80,5 90,10 L100,20" fill="none" stroke="#137fec" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<!-- Axis Labels -->
+<div class="flex justify-between mt-2 text-[10px] text-gray-400 font-medium">
+<span>1 Sep</span>
+<span>10 Sep</span>
+<span>20 Sep</span>
+<span>30 Sep</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Transactions Preview -->
+<div class="px-4">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="text-gray-900 dark:text-white text-base font-bold">Top Expenses</h3>
+<button class="text-primary text-sm font-medium">View All</button>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 active:bg-gray-50 dark:active:bg-gray-800 transition-colors">
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center size-10 rounded-full bg-blue-500/10 text-blue-500">
+<span class="material-symbols-outlined text-xl">shopping_bag</span>
+</div>
+<div>
+<p class="text-gray-900 dark:text-white font-semibold text-sm">Apple Store</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs">Electronics</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-gray-900 dark:text-white font-bold text-sm">-$999.00</p>
+<p class="text-gray-400 text-xs">Sep 15</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 active:bg-gray-50 dark:active:bg-gray-800 transition-colors">
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center size-10 rounded-full bg-orange-500/10 text-orange-500">
+<span class="material-symbols-outlined text-xl">restaurant</span>
+</div>
+<div>
+<p class="text-gray-900 dark:text-white font-semibold text-sm">Whole Foods</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs">Groceries</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-gray-900 dark:text-white font-bold text-sm">-$142.50</p>
+<p class="text-gray-400 text-xs">Sep 12</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation (Placeholder for App Context) -->
+<div class="fixed bottom-0 z-30 w-full max-w-md border-t border-gray-200 dark:border-gray-800 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md pb-safe">
+<div class="flex justify-around items-center h-16">
+<button class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-gray-900 dark:hover:text-white gap-1">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-primary gap-1">
+<span class="material-symbols-outlined filled">analytics</span>
+<span class="text-[10px] font-medium">Analytics</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-gray-900 dark:hover:text-white gap-1">
+<div class="size-10 bg-primary rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/40 -mt-6 mb-1">
+<span class="material-symbols-outlined">add</span>
+</div>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-gray-900 dark:hover:text-white gap-1">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="text-[10px] font-medium">Budget</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-gray-900 dark:hover:text-white gap-1">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>
