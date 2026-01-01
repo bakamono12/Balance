@@ -1,7 +1,7 @@
 # 💰 Balance - Personal Finance Tracker
 
 <div align="center">
-  <img src="./assets/icon.png" alt="Balance Logo" width="120" />
+  <img src="./expense-tracker-app/assets/icon.png" alt="Balance Logo" width="120" />
   
   <p><strong>Track your expenses, manage your budget, and achieve your financial goals</strong></p>
   
