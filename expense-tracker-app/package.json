@@ -1,13 +1,16 @@
 {
   "name": "balance-expense-tracker",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A modern personal finance tracking app to manage expenses, income, and investments",
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build:android": "eas build --platform android --profile production",
+    "build:android:apk": "eas build --platform android --profile preview",
+    "build:ios": "eas build --platform ios --profile production"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, memo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, PanResponder, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useStore } from '../store';
@@ -24,20 +24,19 @@ interface TransactionItemProps {
   onPress?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
-  showActions?: boolean; // Show edit/delete swipe actions
 }
 
-export const TransactionItem: React.FC<TransactionItemProps> = ({
+const TransactionItemComponent: React.FC<TransactionItemProps> = ({
   transaction,
   category,
   onPress,
   onEdit,
   onDelete,
-  showActions = false,
 }) => {
   const { isDarkMode, user, deleteTransaction } = useStore();
   const theme = isDarkMode ? darkTheme : darkTheme;
   const translateX = useRef(new Animated.Value(0)).current;
+  const [isRevealed, setIsRevealed] = useState(false);
 
   const isIncome = transaction.type === 'income';
   const isInvestment = transaction.type === 'investment';
@@ -51,45 +50,65 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        return showActions && Math.abs(gestureState.dx) > 10;
+        // Only activate on horizontal swipe
+        return Math.abs(gestureState.dx) > 10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+      },
+      onPanResponderGrant: () => {
+        // Add subtle feedback when swipe starts
+        translateX.setOffset(translateX._value);
       },
       onPanResponderMove: (_, gestureState) => {
-        if (showActions && gestureState.dx < 0) {
-          translateX.setValue(Math.max(gestureState.dx, -140));
-        }
+        // Only allow left swipe, limit to action width
+        const newValue = Math.max(Math.min(gestureState.dx, 0), -150);
+        translateX.setValue(newValue);
       },
       onPanResponderRelease: (_, gestureState) => {
-        if (!showActions) return;
-        if (gestureState.dx < -60) {
+        translateX.flattenOffset();
+        const threshold = -50;
+
+        if (gestureState.dx < threshold) {
+          // Reveal actions
           Animated.spring(translateX, {
-            toValue: -140,
+            toValue: -150,
             useNativeDriver: true,
+            tension: 100,
+            friction: 10,
           }).start();
+          setIsRevealed(true);
         } else {
+          // Hide actions
           Animated.spring(translateX, {
             toValue: 0,
             useNativeDriver: true,
+            tension: 100,
+            friction: 10,
           }).start();
+          setIsRevealed(false);
         }
       },
     })
   ).current;
 
+  const closeActions = () => {
+    Animated.spring(translateX, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+    setIsRevealed(false);
+  };
+
   const handleDelete = () => {
     Alert.alert(
       'Delete Transaction',
-      'Are you sure you want to delete this transaction?',
+      'Are you sure you want to delete this transaction? This action cannot be undone.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Delete',
           style: 'destructive',
           onPress: async () => {
-            Animated.timing(translateX, {
-              toValue: 0,
-              duration: 200,
-              useNativeDriver: true,
-            }).start();
+            closeActions();
             if (onDelete) {
               onDelete();
             } else {
@@ -102,46 +121,56 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
   };
 
   const handleEdit = () => {
-    Animated.timing(translateX, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
+    closeActions();
     if (onEdit) {
       onEdit();
     }
   };
 
+  const handlePress = () => {
+    if (isRevealed) {
+      closeActions();
+    } else if (onPress) {
+      onPress();
+    }
+  };
+
   return (
     <View style={styles.wrapper}>
-      {/* Action Buttons - only show if showActions is true */}
-      {showActions && (
-        <View style={styles.actionsContainer}>
-          <TouchableOpacity style={[styles.actionButton, styles.editButton]} onPress={handleEdit}>
-            <MaterialIcons name="edit" size={20} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={handleDelete}>
-            <MaterialIcons name="delete" size={20} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      )}
+      <View style={styles.actionsContainer}>
+        <TouchableOpacity
+          style={[styles.actionButton, styles.editButton]}
+          onPress={handleEdit}
+          activeOpacity={0.7}
+        >
+          <MaterialIcons name="edit" size={22} color="#fff" />
+          <Text style={styles.actionText}>Edit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionButton, styles.deleteButton]}
+          onPress={handleDelete}
+          activeOpacity={0.7}
+        >
+          <MaterialIcons name="delete" size={22} color="#fff" />
+          <Text style={styles.actionText}>Delete</Text>
+        </TouchableOpacity>
+      </View>
 
-      {/* Swipeable Content */}
       <Animated.View
         style={[
-          styles.animatedContainer,
+          styles.cardContainer,
           {
             transform: [{ translateX }],
           },
         ]}
-        {...(showActions ? panResponder.panHandlers : {})}
+        {...panResponder.panHandlers}
       >
         <TouchableOpacity
-          style={[styles.container, {
+          style={[styles.card, {
             backgroundColor: theme.colors.surface,
             borderColor: theme.colors.border,
           }]}
-          onPress={onPress}
+          onPress={handlePress}
           activeOpacity={0.7}
         >
           <View style={styles.leftContent}>
@@ -165,19 +194,30 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
             </View>
           </View>
 
-          <Text style={[styles.amount, { color: amountColor }]}>
-            {amountPrefix}{formatCurrency(transaction.amount, user?.currency)}
-          </Text>
+          <View style={styles.rightContent}>
+            <Text style={[styles.amount, { color: amountColor }]}>
+              {amountPrefix}{formatCurrency(transaction.amount, user?.currency)}
+            </Text>
+            <MaterialIcons name="chevron-left" size={16} color={theme.colors.textSecondary} style={styles.swipeHint} />
+          </View>
         </TouchableOpacity>
       </Animated.View>
     </View>
   );
 };
 
+// Export memoized version to prevent re-renders during pagination
+export const TransactionItem = memo(TransactionItemComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.transaction.id === nextProps.transaction.id &&
+    prevProps.category.id === nextProps.category.id
+  );
+});
+
+
 const styles = StyleSheet.create({
   wrapper: {
     marginBottom: 12,
-    position: 'relative',
     overflow: 'hidden',
     borderRadius: 16,
   },
@@ -185,15 +225,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 0,
-    bottom: 0,
+    height: 80,
     flexDirection: 'row',
-    alignItems: 'center',
   },
   actionButton: {
-    width: 70,
-    height: '100%',
+    width: 75,
+    height: 80,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 4,
   },
   editButton: {
     backgroundColor: '#3b82f6',
@@ -201,20 +241,27 @@ const styles = StyleSheet.create({
   deleteButton: {
     backgroundColor: '#ef4444',
   },
-  animatedContainer: {
+  actionText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  cardContainer: {
     width: '100%',
   },
-  container: {
+  card: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
     borderRadius: 16,
     borderWidth: 1,
+    minHeight: 80,
   },
   leftContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
     flex: 1,
   },
   iconContainer: {
@@ -223,23 +270,29 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
   },
   textContainer: {
     flex: 1,
+    gap: 4,
   },
   categoryName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    marginBottom: 4,
   },
   time: {
     fontSize: 12,
   },
+  rightContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
   amount: {
     fontSize: 16,
     fontWeight: '700',
-    marginLeft: 8,
+  },
+  swipeHint: {
+    opacity: 0.3,
   },
 });
 

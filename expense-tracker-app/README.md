@@ -5,11 +5,38 @@
   
   <p><strong>Track your expenses, manage your budget, and achieve your financial goals</strong></p>
   
-  ![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
-  ![React Native](https://img.shields.io/badge/React%20Native-0.76.5-61DAFB.svg)
-  ![Expo](https://img.shields.io/badge/Expo-52.0.29-000020.svg)
+  ![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)
+  ![React Native](https://img.shields.io/badge/React%20Native-0.81.5-61DAFB.svg)
+  ![Expo](https://img.shields.io/badge/Expo-54.0.30-000020.svg)
   ![License](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-green.svg)
+  
+  <p>
+    <a href="https://github.com/yourusername/balance-expense-tracker/releases/latest">
+      <img src="https://img.shields.io/github/v/release/yourusername/balance-expense-tracker?label=Download%20APK&style=for-the-badge&color=success" alt="Download APK" />
+    </a>
+  </p>
 </div>
+
+---
+
+## 📥 Download
+
+### Android
+**[Download Latest APK (v1.2.0)](https://github.com/yourusername/balance-expense-tracker/releases/latest)**
+
+Direct link: [balance-v1.2.0.apk](https://github.com/yourusername/balance-expense-tracker/releases/download/v1.2.0/app-release.apk)
+
+### iOS
+Coming soon! We're working on the iOS version.
+
+### Installation Instructions
+
+#### Android
+1. Download the APK file from the link above
+2. On your Android device, go to **Settings** → **Security** → Enable **"Install from Unknown Sources"**
+3. Open the downloaded APK file
+4. Tap **Install** and wait for installation to complete
+5. Open Balance and start tracking your finances!
 
 ---
 
@@ -28,20 +55,40 @@
 - 🌙 **Dark Theme**: Beautiful dark mode interface
 - 📤 **Export Data**: Backup to JSON or export to CSV
 - 🔒 **Local Storage**: Your data stays on your device with SQLite
+- 🏠 **Home Screen Widgets**: Quick add transactions without opening the app (Android)
+- ⚡ **Performance Optimized**: Smooth scrolling with thousands of transactions
+
+---
+
+## 🆕 What's New in v1.2.0
+
+- 🚀 **Major Performance Improvements**: Blazing fast transaction list with optimized pagination
+- 📱 **Home Screen Widgets**: Add transactions directly from your home screen (Android)
+- 👆 **Swipe Actions**: Swipe left on transactions to reveal edit/delete options
+- 🔧 **Bug Fixes**: Fixed safe area insets, scrolling issues, and UI glitches
+- 🎨 **UI Polish**: Cleaner transaction cards and better visual hierarchy
+
+See full changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### Option 1: Download Pre-built App (Recommended)
+
+Just download the APK from the releases page and install on your Android device!
+
+### Option 2: Development Setup
+
+#### Prerequisites
 
 Before you begin, ensure you have the following installed:
 
-- **Node.js** (v16 or higher) - [Download here](https://nodejs.org/)
+- **Node.js** (v18 or higher) - [Download here](https://nodejs.org/)
 - **npm** or **yarn** - Comes with Node.js
 - **Expo Go** app on your Android/iOS device - [Download from Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent) or [App Store](https://apps.apple.com/app/expo-go/id982107779)
 
-### Installation
+#### Installation
 
 1. **Clone the repository**
    ```bash
@@ -297,7 +344,7 @@ See the [LICENSE](./LICENSE) file for full details.
 
 **Developed with ❤️ by Abhishek Pathak**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@bakamono12](https://github.com/bakamono12)
 - Email: pathaka895@gmail.com
 
 ---
@@ -314,7 +361,7 @@ See the [LICENSE](./LICENSE) file for full details.
 
 If you encounter any issues or have questions:
 
-1. Check the [Issues](https://github.com/yourusername/balance-expense-tracker/issues) page
+1. Check the [Issues](https://github.com/bakamono12/balance-expense-tracker/issues) page
 2. Open a new issue with details
 3. Email: pathaka895@gmail.com
 

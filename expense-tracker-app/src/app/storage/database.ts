@@ -176,8 +176,8 @@ export const initDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   // Initialize default data
   await initDefaultData(db);
 
-  // Seed test data (COMMENT OUT BEFORE PRODUCTION)
-  await seedDatabase();
+  // Note: Seed data functionality has been disabled for clean starts
+  // To enable test data, uncomment seedDatabase code in utils/seedData.ts
 
   return db;
 };

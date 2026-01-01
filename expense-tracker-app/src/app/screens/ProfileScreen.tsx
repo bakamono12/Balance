@@ -3,18 +3,23 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, Modal,
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
 import { useStore } from '../store';
 import { darkTheme } from '../theme';
 import { backupService } from '../services/backup.service';
-import { clearDatabase } from '../storage/database';
+import { clearDatabase, getDatabase } from '../storage/database';
 import { Button } from '../components/Button';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { transactionService } from '../services/database.service';
 import { format } from 'date-fns';
 import { logger } from '../utils/logger';
+import { seedDatabase } from '../utils/seedData';
 
 const { Paths } = FileSystem;
+
+// Check if running in development mode - will be false in production builds
+const __DEV__ = __DEV__ || Constants.appOwnership === 'expo' || Constants.expoConfig?.extra?.isDev === true;
 
 export const ProfileScreen = () => {
   const navigation = useNavigation<any>();
@@ -257,6 +262,43 @@ export const ProfileScreen = () => {
     }
   };
 
+  const handleSeedData = () => {
+    Alert.alert(
+      '🧪 Seed Test Data',
+      'This will populate your database with test transactions for 2025. This action will add sample data to help with testing and development.\n\nContinue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Seed Data',
+          onPress: async () => {
+            try {
+              const db = getDatabase();
+              if (!db) {
+                Alert.alert('Error', 'Database not initialized');
+                return;
+              }
+
+              const result = await seedDatabase(db, true);
+
+              if (result.success) {
+                // Reload data to show new transactions
+                const { loadTransactions } = useStore.getState();
+                await loadUser();
+                await loadTransactions(50);
+                Alert.alert('Success', result.message + '\n\nPlease navigate to Home or Transactions screen to see the seeded data.');
+              } else {
+                Alert.alert('Info', result.message);
+              }
+            } catch (error: any) {
+              console.error('Seed data error:', error);
+              Alert.alert('Error', `Failed to seed data: ${error.message}`);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const selectedCurrency = currencies.find((c) => c.code === user?.currency) || currencies[0];
 
   return (
@@ -382,6 +424,25 @@ export const ProfileScreen = () => {
               <MaterialIcons name="chevron-right" size={20} color={theme.colors.textSecondary} />
             </TouchableOpacity>
 
+            {__DEV__ && (
+              <>
+                <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
+
+                <TouchableOpacity style={styles.menuItem} onPress={handleSeedData}>
+                  <View style={styles.menuLeft}>
+                    <View style={[styles.menuIcon, { backgroundColor: '#06b6d4' + '20' }]}>
+                      <MaterialIcons name="science" size={20} color="#06b6d4" />
+                    </View>
+                    <View>
+                      <Text style={[styles.menuText, { color: theme.colors.text }]}>Seed Test Data</Text>
+                      <Text style={[styles.menuSubtext, { color: theme.colors.textSecondary }]}>Development Only</Text>
+                    </View>
+                  </View>
+                  <MaterialIcons name="chevron-right" size={20} color={theme.colors.textSecondary} />
+                </TouchableOpacity>
+              </>
+            )}
+
             <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
 
             <TouchableOpacity style={styles.menuItem} onPress={handleResetDatabase}>
@@ -429,7 +490,7 @@ export const ProfileScreen = () => {
             </Text>
           </View>
           <Text style={[styles.versionText, { color: theme.colors.textSecondary }]}>
-            Version 1.0.0
+            Version 1.2.0
           </Text>
         </View>
       </ScrollView>
@@ -654,6 +715,10 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     flex: 1,
+  },
+  menuSubtext: {
+    fontSize: 11,
+    marginTop: 2,
   },
   menuRight: {
     flexDirection: 'row',

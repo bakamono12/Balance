@@ -191,7 +191,7 @@ export const HomeScreen = () => {
             <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
               Recent Transactions
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Budget')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Transactions')}>
               <View style={styles.viewAllButton}>
                 <Text style={[styles.viewAllText, { color: theme.colors.primary }]}>
                   View All

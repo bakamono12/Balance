@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { HomeScreen } from '../screens/HomeScreen';
 import { TransactionsScreen } from '../screens/TransactionsScreen';
@@ -19,6 +20,7 @@ export const BottomTabNavigator = () => {
   const theme = isDarkMode ? darkTheme : darkTheme;
   const navigation = useNavigation<any>();
   const [currentRoute, setCurrentRoute] = useState('Home');
+  const insets = useSafeAreaInsets();
 
   const handleFABPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -34,9 +36,9 @@ export const BottomTabNavigator = () => {
             backgroundColor: '#16202a',
             borderTopColor: theme.colors.border,
             borderTopWidth: 1,
-            paddingBottom: 8,
+            paddingBottom: insets.bottom + 8,
             paddingTop: 8,
-            height: 70,
+            height: 70 + insets.bottom,
           },
           tabBarActiveTintColor: theme.colors.primary,
           tabBarInactiveTintColor: theme.colors.textSecondary,
@@ -108,7 +110,7 @@ export const BottomTabNavigator = () => {
       {/* Hide FAB on Budget, Stats, and Profile screens */}
       {currentRoute !== 'Budget' && currentRoute !== 'Stats' && currentRoute !== 'Profile' && (
         <TouchableOpacity
-          style={styles.fab}
+          style={[styles.fab, { bottom: 80 + insets.bottom }]}
           onPress={handleFABPress}
           activeOpacity={0.8}
         >

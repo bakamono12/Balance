@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
 import { useStore } from '../store';
@@ -41,12 +42,16 @@ export const AddTransactionScreen = ({ route }: any) => {
   const navigation = useNavigation<any>();
   const { isDarkMode, categories, addTransaction, updateTransaction, user } = useStore();
   const theme = isDarkMode ? darkTheme : darkTheme;
+  const insets = useSafeAreaInsets();
 
   // Check if we're editing an existing transaction
   const editingTransaction = route?.params?.transaction;
   const isEditMode = !!editingTransaction;
 
-  const [type, setType] = useState<TransactionType>(editingTransaction?.type || 'expense');
+  // Get initial type from widget or default to expense
+  const initialType = route?.params?.initialType || editingTransaction?.type || 'expense';
+
+  const [type, setType] = useState<TransactionType>(initialType as TransactionType);
   const [amount, setAmount] = useState(editingTransaction?.amount?.toString() || '');
   const [selectedCategory, setSelectedCategory] = useState<string>(editingTransaction?.categoryId || '');
   const [date, setDate] = useState(editingTransaction?.date ? new Date(editingTransaction.date) : new Date());
@@ -337,7 +342,7 @@ export const AddTransactionScreen = ({ route }: any) => {
         <View style={{ height: 120 }} />
       </ScrollView>
 
-      <View style={[styles.footer, { backgroundColor: theme.colors.background }]}>
+      <View style={[styles.footer, { backgroundColor: theme.colors.background, paddingBottom: insets.bottom + 20 }]}>
         <Button
           title={isEditMode ? "Update Transaction" : "Save Transaction"}
           onPress={handleSave}
@@ -369,7 +374,7 @@ export const AddTransactionScreen = ({ route }: any) => {
         onRequestClose={() => setShowPaymentModeModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: theme.colors.surface }]}>
+          <View style={[styles.modalContent, { backgroundColor: theme.colors.surface, paddingBottom: insets.bottom + 40 }]}>
             <View style={styles.modalHeader}>
               <Text style={[styles.modalTitle, { color: theme.colors.text }]}>Select Payment Mode</Text>
               <TouchableOpacity onPress={() => setShowPaymentModeModal(false)}>

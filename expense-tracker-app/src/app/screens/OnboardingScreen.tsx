@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../store';
 import { darkTheme } from '../theme';
 import { Button } from '../components/Button';
@@ -21,6 +22,7 @@ export const OnboardingScreen = () => {
   const navigation = useNavigation<any>();
   const { updateUser } = useStore();
   const theme = darkTheme;
+  const insets = useSafeAreaInsets();
 
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
@@ -233,7 +235,7 @@ export const OnboardingScreen = () => {
         )}
       </ScrollView>
 
-      <View style={[styles.footer, { backgroundColor: theme.colors.background }]}>
+      <View style={[styles.footer, { backgroundColor: theme.colors.background, paddingBottom: insets.bottom + 24 }]}>
         {step > 1 && (
           <TouchableOpacity
             style={[styles.backButton, { backgroundColor: theme.colors.surface }]}

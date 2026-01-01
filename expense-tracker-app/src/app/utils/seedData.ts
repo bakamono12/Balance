@@ -1,42 +1,43 @@
-import { getDatabase, generateId } from '../storage/database';
+import * as SQLite from 'expo-sqlite';
+import * as Crypto from 'expo-crypto';
 import { format } from 'date-fns';
 
-export const seedDatabase = async () => {
-  const db = getDatabase();
+// Helper to generate unique IDs
+const generateId = async (): Promise<string> => {
+  const uuid = Crypto.randomUUID();
+  return uuid;
+};
 
+export const seedDatabase = async (db: SQLite.SQLiteDatabase, force: boolean = false) => {
   // Check if we already have transactions
   const existingTransactions = await db.getFirstAsync<any>(
     'SELECT COUNT(*) as count FROM transactions'
   );
 
-  if (existingTransactions && existingTransactions.count > 0) {
+  if (!force && existingTransactions && existingTransactions.count > 0) {
     console.log('Database already has data, skipping seed');
-    return;
+    return { success: false, message: 'Database already has data' };
   }
 
-  console.log('Skipping seed data - starting with clean database');
-  // Seed data disabled for clean start
-  return;
-
-  /* SEED DATA DISABLED - Uncomment below to enable test data
   console.log('Seeding database with comprehensive 2025 test data...');
 
-  // Get categories
-  const categories = await db.getAllAsync<any>('SELECT * FROM categories');
-  const foodCat = categories.find(c => c.name === 'Food');
-  const transportCat = categories.find(c => c.name === 'Transport');
-  const shoppingCat = categories.find(c => c.name === 'Shopping');
-  const entertainmentCat = categories.find(c => c.name === 'Entertainment');
-  const salaryCat = categories.find(c => c.name === 'Salary');
-  const groceryCat = categories.find(c => c.name === 'Grocery');
-  const utilitiesCat = categories.find(c => c.name === 'Utilities');
-  const healthCat = categories.find(c => c.name === 'Health');
-  const rechargeCat = categories.find(c => c.name === 'Recharge');
-  const mutualFundsCat = categories.find(c => c.name === 'Mutual Funds');
+  try {
+    // Get categories
+    const categories = await db.getAllAsync<any>('SELECT * FROM categories');
+    const foodCat = categories.find(c => c.name === 'Food');
+    const transportCat = categories.find(c => c.name === 'Transport');
+    const shoppingCat = categories.find(c => c.name === 'Shopping');
+    const entertainmentCat = categories.find(c => c.name === 'Entertainment');
+    const salaryCat = categories.find(c => c.name === 'Salary');
+    const groceryCat = categories.find(c => c.name === 'Grocery');
+    const utilitiesCat = categories.find(c => c.name === 'Utilities');
+    const healthCat = categories.find(c => c.name === 'Health');
+    const rechargeCat = categories.find(c => c.name === 'Recharge');
+    const mutualFundsCat = categories.find(c => c.name === 'Mutual Funds');
 
-  // Payment modes to use randomly
-  const paymentModes = ['upi', 'credit_card', 'debit_card', 'cash', 'bank_transfer', 'wallet'];
-  const getRandomPaymentMode = () => paymentModes[Math.floor(Math.random() * paymentModes.length)];
+    // Payment modes to use randomly
+    const paymentModes = ['upi', 'credit_card', 'debit_card', 'cash', 'bank_transfer', 'wallet'];
+    const getRandomPaymentMode = () => paymentModes[Math.floor(Math.random() * paymentModes.length)];
 
   // Helper function to create transaction
   const createTransaction = async (type: string, amount: number, categoryId: string, date: Date, notes: string, fundName?: string, paymentMode?: string) => {
@@ -213,7 +214,12 @@ export const seedDatabase = async () => {
   console.log('  Total Investment: ₹39,600');
   console.log('  Total Expenses: ₹2,40,000-3,00,000 (avg ₹2,70,000)');
   console.log('  Net Savings: ₹4,00,400-4,60,400 (avg ₹4,30,400)');
-  */
+
+  return { success: true, message: 'Database seeded successfully!' };
+  } catch (error: any) {
+    console.error('Error seeding database:', error);
+    return { success: false, message: `Error: ${error.message}` };
+  }
 };
 
 

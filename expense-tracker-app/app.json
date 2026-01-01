@@ -2,7 +2,7 @@
   "expo": {
     "name": "Balance",
     "slug": "expense-tracker-app",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -13,10 +13,13 @@
       "backgroundColor": "#0f1419"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.expensetracker.app",
+      "buildNumber": "1.2.0"
     },
     "android": {
       "package": "com.expensetracker.app",
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -28,6 +31,7 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
+      "isDev": false,
       "eas": {
         "projectId": "c37b6b4e-d273-4ff8-a5cb-188bb403cb81"
       }

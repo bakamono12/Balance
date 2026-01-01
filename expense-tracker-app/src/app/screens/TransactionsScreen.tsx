@@ -1,15 +1,21 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, SectionList, Modal, RefreshControl, ActivityIndicator, TextInput } from 'react-native';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, FlatList, Modal, RefreshControl, ActivityIndicator, TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useStore } from '../store';
 import { darkTheme } from '../theme';
 import { TransactionItem } from '../components/TransactionItem';
-import { formatCurrency, formatDate, groupTransactionsByDate, getCurrentMonth, getMonthStartEnd } from '../utils/formatters';
+import { formatCurrency, formatDate, getCurrentMonth, getMonthStartEnd } from '../utils/formatters';
 import { transactionService } from '../services/database.service';
 import { analyticsService } from '../services/analytics.service';
 import { format } from 'date-fns';
+
+const PAGE_SIZE = 50;
+
+type FlatListItem =
+  | { type: 'header'; date: string; id: string }
+  | { type: 'transaction'; transaction: any; category: any; id: string };
 
 export const TransactionsScreen = () => {
   const navigation = useNavigation<any>();
@@ -26,25 +32,58 @@ export const TransactionsScreen = () => {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [displayCount, setDisplayCount] = useState(100);
-  const loadingRef = useRef(false);
-  const sectionListRef = useRef<SectionList>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginatedData, setPaginatedData] = useState<typeof transactions>([]);
+  const flatListRef = useRef<FlatList>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const loadingRef = useRef(false);
+  const onEndReachedCalledDuringMomentum = useRef(true);
+
+  // Precomputed category map for O(1) lookups
+  const categoryMap = useMemo(() => {
+    const map = new Map();
+    categories.forEach(cat => map.set(cat.id, cat));
+    return map;
+  }, [categories]);
 
   useEffect(() => {
-    loadData();
+    const init = async () => {
+      await loadData();
+      // Load first page after data is loaded
+      const filtered = getFilteredTransactions();
+      const firstPage = filtered.slice(0, PAGE_SIZE);
+      setPaginatedData(firstPage);
+    };
+    init();
   }, []);
 
-  // Reset display count when filter or search changes
+  // Fully reset pagination when filter or search changes
   useEffect(() => {
-    setDisplayCount(100);
+    if (transactions.length === 0) return; // Don't run before initial load
+
+    setCurrentPage(1);
     loadingRef.current = false;
     setLoadingMore(false);
-  }, [filter, searchQuery]);
+    onEndReachedCalledDuringMomentum.current = true;
+
+    // Reload data with new filters
+    const filtered = getFilteredTransactions();
+    const firstPage = filtered.slice(0, PAGE_SIZE);
+    setPaginatedData(firstPage);
+  }, [filter, searchQuery, startDate, endDate]);
+
+  // Load first page when transactions change (after initial load)
+  useEffect(() => {
+    if (transactions.length > 0 && paginatedData.length === 0) {
+      const filtered = getFilteredTransactions();
+      const firstPage = filtered.slice(0, PAGE_SIZE);
+      setPaginatedData(firstPage);
+    }
+  }, [transactions.length]);
 
   const loadData = async () => {
-    await loadTransactions();
+    await loadTransactions(200); // Load more initially
     await calculateBalance();
   };
 
@@ -62,63 +101,80 @@ export const TransactionsScreen = () => {
     setBalanceChange(changes.balance);
   };
 
-  const allFilteredTransactions = transactions.filter(t => {
-    // Type filter
-    if (filter !== 'all' && t.type !== filter) return false;
+  // Memoized filter function to get all matching transactions
+  const getFilteredTransactions = useCallback(() => {
+    if (!transactions || transactions.length === 0) return [];
 
-    // Date range filter
-    if (startDate && endDate) {
-      const transactionDate = new Date(t.date);
-      if (transactionDate < startDate || transactionDate > endDate) return false;
-    }
+    return transactions.filter(t => {
+      // Type filter
+      if (filter !== 'all' && t.type !== filter) return false;
 
-    // Search filter (case-insensitive search across multiple fields)
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      const category = categories.find(c => c.id === t.categoryId);
-      const categoryName = category?.name.toLowerCase() || '';
-      const notes = (t.notes || '').toLowerCase();
-      const paymentMode = t.paymentMode.replace(/_/g, ' ').toLowerCase();
-      const dateStr = format(new Date(t.date), 'MMM dd, yyyy').toLowerCase();
-      const amountStr = t.amount.toString();
+      // Date range filter
+      if (startDate && endDate) {
+        const transactionDate = new Date(t.date);
+        if (transactionDate < startDate || transactionDate > endDate) return false;
+      }
 
-      // Check if query matches any field (ILIKE behavior)
-      const matches =
-        categoryName.includes(query) ||
-        notes.includes(query) ||
-        paymentMode.includes(query) ||
-        dateStr.includes(query) ||
-        amountStr.includes(query);
+      // Search filter (case-insensitive search across multiple fields)
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase().trim();
+        const category = categories.find(c => c.id === t.categoryId);
+        const categoryName = category?.name.toLowerCase() || '';
+        const notes = (t.notes || '').toLowerCase();
+        const paymentMode = t.paymentMode.replace(/_/g, ' ').toLowerCase();
+        const dateStr = format(new Date(t.date), 'MMM dd, yyyy').toLowerCase();
+        const amountStr = t.amount.toString();
 
-      if (!matches) return false;
-    }
+        // Check if query matches any field (ILIKE behavior)
+        const matches =
+          categoryName.includes(query) ||
+          notes.includes(query) ||
+          paymentMode.includes(query) ||
+          dateStr.includes(query) ||
+          amountStr.includes(query);
 
-    return true;
-  });
+        if (!matches) return false;
+      }
 
-  const filteredTransactions = allFilteredTransactions.slice(0, displayCount);
-  const hasMoreTransactions = allFilteredTransactions.length > displayCount;
+      return true;
+    });
+  }, [transactions, filter, startDate, endDate, searchQuery, categories]);
 
-  const loadMoreTransactions = async () => {
-    // Prevent multiple simultaneous loads
-    if (loadingRef.current || !hasMoreTransactions) {
+  // Check if more data is available
+  const allFiltered = getFilteredTransactions();
+  const hasMoreTransactions = paginatedData.length < allFiltered.length;
+
+  // APPEND next page instead of replacing entire array
+  const loadMoreTransactions = useCallback(async () => {
+    if (loadingRef.current || !hasMoreTransactions || loadingMore || onEndReachedCalledDuringMomentum.current) {
       return;
     }
 
+    onEndReachedCalledDuringMomentum.current = true;
     loadingRef.current = true;
     setLoadingMore(true);
 
-    // Simulate network delay - load next batch
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 300));
 
-    // Update display count to show next 100 transactions
-    setDisplayCount(prev => prev + 100);
+    // APPEND new items instead of rebuilding entire array
+    const startIndex = paginatedData.length;
+    const endIndex = startIndex + PAGE_SIZE;
+    const newItems = allFiltered.slice(startIndex, endIndex);
 
-    // Reset loading state
+    setPaginatedData(prev => [...prev, ...newItems]); // APPEND
+    setCurrentPage(prev => prev + 1);
+
     setLoadingMore(false);
     loadingRef.current = false;
-  };
+  }, [hasMoreTransactions, loadingMore, allFiltered, paginatedData.length]);
 
+  // Debounced onEndReached
+  const handleEndReached = useCallback(() => {
+    if (!onEndReachedCalledDuringMomentum.current) {
+      loadMoreTransactions();
+      onEndReachedCalledDuringMomentum.current = true;
+    }
+  }, [loadMoreTransactions]);
 
   const clearDateFilter = () => {
     setStartDate(null);
@@ -128,15 +184,47 @@ export const TransactionsScreen = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
+    setCurrentPage(1);
+    setPaginatedData([]);
     await loadData();
+    const filtered = getFilteredTransactions();
+    const firstPage = filtered.slice(0, PAGE_SIZE);
+    setPaginatedData(firstPage);
     setRefreshing(false);
   };
 
-  const groupedTransactions = groupTransactionsByDate(filteredTransactions);
-  const sections = Object.keys(groupedTransactions).map(date => ({
-    title: date,
-    data: groupedTransactions[date],
-  }));
+  // Create flat list with inline date headers - no regrouping on pagination
+  const flatListData = useMemo((): FlatListItem[] => {
+    const items: FlatListItem[] = [];
+    let lastDate = '';
+
+    paginatedData.forEach((transaction) => {
+      const transactionDate = transaction.date;
+
+      // Insert date header when date changes
+      if (transactionDate !== lastDate) {
+        items.push({
+          type: 'header',
+          date: transactionDate,
+          id: `header-${transactionDate}`,
+        });
+        lastDate = transactionDate;
+      }
+
+      // Add transaction with precomputed category
+      const category = categoryMap.get(transaction.categoryId);
+      if (category) {
+        items.push({
+          type: 'transaction',
+          transaction,
+          category,
+          id: transaction.id,
+        });
+      }
+    });
+
+    return items;
+  }, [paginatedData, categoryMap]);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -311,71 +399,73 @@ export const TransactionsScreen = () => {
         />
       )}
 
-      <SectionList
-        key={`${filter}-${searchQuery}`}
-        ref={sectionListRef}
-        sections={sections}
+      <FlatList
+        ref={flatListRef}
+        data={flatListData}
         keyExtractor={(item) => item.id}
-        extraData={filter + searchQuery}
         renderItem={({ item }) => {
-          const category = categories.find(c => c.id === item.categoryId);
-          if (!category) return null;
+          if (item.type === 'header') {
+            return (
+              <View style={[styles.sectionHeader, { backgroundColor: theme.colors.background }]}>
+                <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
+                  {formatDate(item.date).toUpperCase()}
+                </Text>
+              </View>
+            );
+          }
+
           return (
             <TransactionItem
-              transaction={item}
-              category={category}
-              showActions={true}
+              transaction={item.transaction}
+              category={item.category}
               onEdit={() => {
-                // Navigate to AddTransactionScreen with transaction data for editing
                 navigation.navigate('AddTransaction', {
-                  transaction: item,
-                  category: category
+                  transaction: item.transaction,
+                  category: item.category
                 });
               }}
             />
           );
         }}
-        renderSectionHeader={({ section: { title } }) => (
-          <View style={[styles.sectionHeader, { backgroundColor: theme.colors.background }]}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
-              {formatDate(title).toUpperCase()}
-            </Text>
-          </View>
-        )}
         contentContainerStyle={styles.listContent}
-        stickySectionHeadersEnabled={true}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        onEndReached={loadMoreTransactions}
+        onEndReached={handleEndReached}
         onEndReachedThreshold={0.3}
+        onMomentumScrollBegin={() => {
+          onEndReachedCalledDuringMomentum.current = false;
+        }}
         removeClippedSubviews={true}
-        maxToRenderPerBatch={20}
+        maxToRenderPerBatch={15}
+        initialNumToRender={15}
         updateCellsBatchingPeriod={50}
-        windowSize={10}
+        windowSize={7}
         ListFooterComponent={
-          hasMoreTransactions ? (
+          hasMoreTransactions && loadingMore ? (
             <View style={styles.loadingFooter}>
-              {loadingMore ? (
-                <>
-                  <ActivityIndicator size="small" color={theme.colors.primary} />
-                  <Text style={[styles.loadingText, { color: theme.colors.textSecondary }]}>
-                    Loading more transactions...
-                  </Text>
-                </>
-              ) : (
-                <Text style={[styles.loadingText, { color: theme.colors.textSecondary }]}>
-                  Scroll to load more...
-                </Text>
-              )}
-            </View>
-          ) : (
-            <View style={styles.loadingFooter}>
+              <ActivityIndicator size="small" color={theme.colors.primary} />
               <Text style={[styles.loadingText, { color: theme.colors.textSecondary }]}>
-                No more transactions
+                Loading more...
               </Text>
             </View>
-          )
+          ) : paginatedData.length > 0 && !hasMoreTransactions ? (
+            <View style={styles.loadingFooter}>
+              <Text style={[styles.loadingText, { color: theme.colors.textSecondary }]}>
+                All transactions loaded
+              </Text>
+            </View>
+          ) : null
+        }
+        ListEmptyComponent={
+          !refreshing ? (
+            <View style={styles.emptyContainer}>
+              <MaterialIcons name="receipt-long" size={64} color={theme.colors.textSecondary} />
+              <Text style={[styles.emptyText, { color: theme.colors.textSecondary }]}>
+                No transactions found
+              </Text>
+            </View>
+          ) : null
         }
       />
     </View>
@@ -510,6 +600,37 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 8,
     fontSize: 12,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  loadingBox: {
+    padding: 24,
+    borderRadius: 16,
+    alignItems: 'center',
+    gap: 12,
+    minWidth: 200,
+  },
+  loadingOverlayText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  emptyContainer: {
+    paddingTop: 60,
+    alignItems: 'center',
+    gap: 16,
+  },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
