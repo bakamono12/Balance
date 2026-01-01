@@ -49,6 +49,12 @@ yarn-error.*
 
 # generic pycharm files and custom files
 .idea/
+
+# Security - DO NOT COMMIT
+git
+*.token
+.env
+credentials.txt
 *.iml
 
 # development scripts and test files
@@ -56,4 +62,4 @@ verify-app.sh
 TEST*.md
 ISSUE*.md
 UI/
-git
+GITHUB_SETUP.md
