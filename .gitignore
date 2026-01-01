@@ -56,3 +56,4 @@ verify-app.sh
 TEST*.md
 ISSUE*.md
 UI/
+git
