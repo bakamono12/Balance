@@ -11,8 +11,8 @@
   ![License](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-green.svg)
   
   <p>
-    <a href="https://github.com/yourusername/expense_tracker/releases/latest">
-      <img src="https://img.shields.io/github/v/release/yourusername/expense_tracker?label=Download%20APK&style=for-the-badge&color=success" alt="Download APK" />
+    <a href="https://github.com/bakamono12/expense_tracker/releases/latest">
+      <img src="https://img.shields.io/github/v/release/bakamono12/expense_tracker?label=Download%20APK&style=for-the-badge&color=success" alt="Download APK" />
     </a>
   </p>
 </div>
@@ -22,12 +22,11 @@
 ## 📥 Download
 
 ### Android
-**[Download Latest APK (v1.2.0)](https://github.com/yourusername/expense_tracker/releases/latest)**
+**[Download Latest APK (v1.2.0)](https://expo.dev/artifacts/eas/bbpTkHuHQoZTUhbUMNS2qu.apk)**
 
-Direct link: [balance-v1.2.0.apk](https://github.com/yourusername/expense_tracker/releases/download/v1.2.0/balance-v1.2.0.apk)
 
 ### iOS
-Coming soon! We're working on the iOS version.
+----Nope----
 
 ### Installation Instructions
 
@@ -92,7 +91,7 @@ Before you begin, ensure you have the following installed:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/expense_tracker.git
+   git clone https://github.com/bakamon12/expense_tracker.git
    cd expense_tracker/expense-tracker-app
    ```
 
@@ -235,7 +234,7 @@ We welcome contributions! Here's how you can help:
 
 1. **Fork the repository**
    ```bash
-   git clone https://github.com/yourusername/balance-expense-tracker.git
+   git clone https://github.com/bakamono12/balance-expense-tracker.git
    ```
 
 2. **Create a feature branch**
@@ -344,7 +343,7 @@ See the [LICENSE](./LICENSE) file for full details.
 
 **Developed with ❤️ by Abhishek Pathak**
 
-- GitHub: [@yourusername](https://github.com/bakamono12)
+- GitHub: [@bakamono12](https://github.com/bakamono12)
 - Email: pathaka895@gmail.com
 
 ---
@@ -361,7 +360,7 @@ See the [LICENSE](./LICENSE) file for full details.
 
 If you encounter any issues or have questions:
 
-1. Check the [Issues](https://github.com/yourusername/balance-expense-tracker/issues) page
+1. Check the [Issues](https://github.com/bakamono12/balance-expense-tracker/issues) page
 2. Open a new issue with details
 3. Email: pathaka895@gmail.com
 
