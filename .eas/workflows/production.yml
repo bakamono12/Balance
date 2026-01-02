@@ -21,14 +21,13 @@ jobs:
           version: 20
 
       - name: Install dependencies
+        working_directory: expense-tracker-app
         run: |
-          cd expense-tracker-app
           npm ci
 
       - name: Validate versions
+        working_directory: expense-tracker-app
         run: |
-          cd expense-tracker-app
-          
           echo "🔍 Validating versions for production build..."
           
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
@@ -52,20 +51,18 @@ jobs:
     type: build
     depends_on:
       - version_check
+    working_directory: expense-tracker-app
     params:
       platform: android
       profile: production
-    inputs:
-      working_directory: ./expense-tracker-app
 
   build_ios_production:
     name: Build iOS Production
     type: build
     depends_on:
       - version_check
+    working_directory: expense-tracker-app
     params:
       platform: ios
       profile: production
-    inputs:
-      working_directory: ./expense-tracker-app
 

@@ -17,15 +17,17 @@ jobs:
         node:
           version: 20
 
+      - name: Change to app directory
+        working_directory: expense-tracker-app
+
       - name: Install dependencies
+        working_directory: expense-tracker-app
         run: |
-          cd expense-tracker-app
           npm ci
 
       - name: Validate versions
+        working_directory: expense-tracker-app
         run: |
-          cd expense-tracker-app
-          
           echo "🔍 Checking version consistency..."
           echo ""
           
@@ -56,8 +58,8 @@ jobs:
           echo "✅ All versions are consistent!"
 
       - name: TypeScript check
+        working_directory: expense-tracker-app
         run: |
-          cd expense-tracker-app
           echo "🔍 Checking TypeScript..."
           npx tsc --noEmit
           echo "✅ TypeScript check passed!"
@@ -67,20 +69,18 @@ jobs:
     type: build
     depends_on:
       - version_check
+    working_directory: expense-tracker-app
     params:
       platform: android
       profile: preview
-    inputs:
-      working_directory: ./expense-tracker-app
 
   build_ios:
     name: Build iOS App
     type: build
     depends_on:
       - version_check
+    working_directory: expense-tracker-app
     params:
       platform: ios
       profile: preview
-    inputs:
-      working_directory: ./expense-tracker-app
 
