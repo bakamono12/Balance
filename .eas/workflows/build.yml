@@ -1,0 +1,86 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - v1
+
+jobs:
+  version_check:
+    name: Version Consistency Check
+    type: generic
+    steps:
+      - name: Checkout code
+        checkout: true
+
+      - name: Setup Node.js
+        node:
+          version: 20
+
+      - name: Install dependencies
+        run: |
+          cd expense-tracker-app
+          npm ci
+
+      - name: Validate versions
+        run: |
+          cd expense-tracker-app
+          
+          echo "🔍 Checking version consistency..."
+          echo ""
+          
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          APP_VERSION=$(node -p "require('./app.json').expo.version")
+          IOS_BUILD=$(node -p "require('./app.json').expo.ios.buildNumber")
+          ANDROID_VERSION=$(node -p "require('./app.json').expo.android.versionCode")
+          
+          echo "📋 Current Versions:"
+          echo "├─ package.json: $PACKAGE_VERSION"
+          echo "├─ app.json: $APP_VERSION"
+          echo "├─ iOS buildNumber: $IOS_BUILD"
+          echo "└─ Android versionCode: $ANDROID_VERSION"
+          echo ""
+          
+          if [ "$PACKAGE_VERSION" != "$APP_VERSION" ]; then
+            echo "❌ ERROR: Version mismatch!"
+            echo "   package.json: $PACKAGE_VERSION"
+            echo "   app.json: $APP_VERSION"
+            exit 1
+          fi
+          
+          if [[ ! "$PACKAGE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ ERROR: Version doesn't follow semantic versioning (x.y.z)"
+            exit 1
+          fi
+          
+          echo "✅ All versions are consistent!"
+
+      - name: TypeScript check
+        run: |
+          cd expense-tracker-app
+          echo "🔍 Checking TypeScript..."
+          npx tsc --noEmit
+          echo "✅ TypeScript check passed!"
+
+  build_android:
+    name: Build Android App
+    type: build
+    depends_on:
+      - version_check
+    params:
+      platform: android
+      profile: preview
+    inputs:
+      working_directory: ./expense-tracker-app
+
+  build_ios:
+    name: Build iOS App
+    type: build
+    depends_on:
+      - version_check
+    params:
+      platform: ios
+      profile: preview
+    inputs:
+      working_directory: ./expense-tracker-app
+

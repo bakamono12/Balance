@@ -1,0 +1,71 @@
+name: Production Build
+
+on:
+  push:
+    branches:
+      - main
+      - production
+    tags:
+      - v*
+
+jobs:
+  version_check:
+    name: Version Consistency Check
+    type: generic
+    steps:
+      - name: Checkout code
+        checkout: true
+
+      - name: Setup Node.js
+        node:
+          version: 20
+
+      - name: Install dependencies
+        run: |
+          cd expense-tracker-app
+          npm ci
+
+      - name: Validate versions
+        run: |
+          cd expense-tracker-app
+          
+          echo "🔍 Validating versions for production build..."
+          
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          APP_VERSION=$(node -p "require('./app.json').expo.version")
+          IOS_BUILD=$(node -p "require('./app.json').expo.ios.buildNumber")
+          ANDROID_VERSION=$(node -p "require('./app.json').expo.android.versionCode")
+          
+          echo "📦 Version: $PACKAGE_VERSION"
+          echo "🤖 Android versionCode: $ANDROID_VERSION"
+          echo "🍎 iOS buildNumber: $IOS_BUILD"
+          
+          if [ "$PACKAGE_VERSION" != "$APP_VERSION" ]; then
+            echo "❌ Version mismatch detected!"
+            exit 1
+          fi
+          
+          echo "✅ Versions validated for production"
+
+  build_android_production:
+    name: Build Android Production
+    type: build
+    depends_on:
+      - version_check
+    params:
+      platform: android
+      profile: production
+    inputs:
+      working_directory: ./expense-tracker-app
+
+  build_ios_production:
+    name: Build iOS Production
+    type: build
+    depends_on:
+      - version_check
+    params:
+      platform: ios
+      profile: production
+    inputs:
+      working_directory: ./expense-tracker-app
+
