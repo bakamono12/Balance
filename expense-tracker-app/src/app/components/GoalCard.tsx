@@ -28,20 +28,25 @@ export const GoalCard: React.FC<GoalCardProps> = ({
   const progress = (goal.currentAmount / goal.targetAmount) * 100;
   const isCompleted = goal.status === 'completed';
   const isBehind = goal.status === 'behind';
+  const isWarning = goal.status === 'warning';
 
   const statusColor = isCompleted
     ? theme.colors.success.main
+    : isWarning
+    ? '#f59e0b'
     : isBehind
     ? theme.colors.warning.main
     : theme.colors.primary;
 
   const statusBg = isCompleted
     ? theme.colors.success.dark
+    : isWarning
+    ? '#f59e0b20'
     : isBehind
     ? theme.colors.warning.dark
     : theme.colors.primary + '20';
 
-  const statusIcon = isCompleted ? 'check-circle' : isBehind ? 'warning' : 'trending-up';
+  const statusIcon = isCompleted ? 'check-circle' : isWarning ? 'warning' : isBehind ? 'warning' : 'trending-up';
 
   const panResponder = useRef(
     PanResponder.create({
@@ -152,7 +157,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({
               {goal.name}
             </Text>
             <Text style={[styles.status, { color: statusColor }]}>
-              {goal.status === 'completed' ? 'Goal Met!' : goal.status === 'behind' ? 'Behind' : 'On Track'}
+              {goal.status === 'completed' ? 'Goal Met!' : goal.status === 'warning' ? 'Warning!' : goal.status === 'behind' ? 'Behind' : 'On Track'}
             </Text>
           </View>
         </View>

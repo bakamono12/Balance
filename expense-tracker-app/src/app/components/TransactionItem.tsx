@@ -24,6 +24,7 @@ interface TransactionItemProps {
   onPress?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  readOnly?: boolean;
 }
 
 const TransactionItemComponent: React.FC<TransactionItemProps> = ({
@@ -32,6 +33,7 @@ const TransactionItemComponent: React.FC<TransactionItemProps> = ({
   onPress,
   onEdit,
   onDelete,
+  readOnly = false,
 }) => {
   const { isDarkMode, user, deleteTransaction } = useStore();
   const theme = isDarkMode ? darkTheme : darkTheme;
@@ -50,11 +52,14 @@ const TransactionItemComponent: React.FC<TransactionItemProps> = ({
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, gestureState) => {
+        // Disable swipe if readOnly
+        if (readOnly) return false;
         // Only activate on horizontal swipe
         return Math.abs(gestureState.dx) > 10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
       },
       onPanResponderGrant: () => {
         // Add subtle feedback when swipe starts
+        // @ts-ignore - accessing internal animated value
         translateX.setOffset(translateX._value);
       },
       onPanResponderMove: (_, gestureState) => {
@@ -92,8 +97,9 @@ const TransactionItemComponent: React.FC<TransactionItemProps> = ({
   const closeActions = () => {
     Animated.spring(translateX, {
       toValue: 0,
-      duration: 200,
       useNativeDriver: true,
+      tension: 100,
+      friction: 10,
     }).start();
     setIsRevealed(false);
   };
@@ -137,33 +143,35 @@ const TransactionItemComponent: React.FC<TransactionItemProps> = ({
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.actionsContainer}>
-        <TouchableOpacity
-          style={[styles.actionButton, styles.editButton]}
-          onPress={handleEdit}
-          activeOpacity={0.7}
-        >
-          <MaterialIcons name="edit" size={22} color="#fff" />
-          <Text style={styles.actionText}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.actionButton, styles.deleteButton]}
-          onPress={handleDelete}
-          activeOpacity={0.7}
-        >
-          <MaterialIcons name="delete" size={22} color="#fff" />
-          <Text style={styles.actionText}>Delete</Text>
-        </TouchableOpacity>
-      </View>
+      {!readOnly && (
+        <View style={styles.actionsContainer}>
+          <TouchableOpacity
+            style={[styles.actionButton, styles.editButton]}
+            onPress={handleEdit}
+            activeOpacity={0.7}
+          >
+            <MaterialIcons name="edit" size={22} color="#fff" />
+            <Text style={styles.actionText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.actionButton, styles.deleteButton]}
+            onPress={handleDelete}
+            activeOpacity={0.7}
+          >
+            <MaterialIcons name="delete" size={22} color="#fff" />
+            <Text style={styles.actionText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       <Animated.View
         style={[
           styles.cardContainer,
           {
-            transform: [{ translateX }],
+            transform: [{ translateX: readOnly ? 0 : translateX }],
           },
         ]}
-        {...panResponder.panHandlers}
+        {...(readOnly ? {} : panResponder.panHandlers)}
       >
         <TouchableOpacity
           style={[styles.card, {
@@ -188,6 +196,11 @@ const TransactionItemComponent: React.FC<TransactionItemProps> = ({
               <Text style={[styles.categoryName, { color: theme.colors.text }]}>
                 {transaction.fundName || category.name}
               </Text>
+              {transaction.notes && (
+                <Text style={[styles.notes, { color: theme.colors.textSecondary }]} numberOfLines={1}>
+                  {transaction.notes}
+                </Text>
+              )}
               <Text style={[styles.time, { color: theme.colors.textSecondary }]}>
                 {formatTimeAgo(transaction.createdAt)} • {getPaymentModeLabel(transaction.paymentMode)}
               </Text>
@@ -198,7 +211,9 @@ const TransactionItemComponent: React.FC<TransactionItemProps> = ({
             <Text style={[styles.amount, { color: amountColor }]}>
               {amountPrefix}{formatCurrency(transaction.amount, user?.currency)}
             </Text>
-            <MaterialIcons name="chevron-left" size={16} color={theme.colors.textSecondary} style={styles.swipeHint} />
+            {!readOnly && (
+              <MaterialIcons name="chevron-left" size={16} color={theme.colors.textSecondary} style={styles.swipeHint} />
+            )}
           </View>
         </TouchableOpacity>
       </Animated.View>
@@ -278,6 +293,10 @@ const styles = StyleSheet.create({
   categoryName: {
     fontSize: 15,
     fontWeight: '600',
+  },
+  notes: {
+    fontSize: 13,
+    fontStyle: 'italic',
   },
   time: {
     fontSize: 12,

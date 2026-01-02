@@ -136,7 +136,7 @@ export const initDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
     CREATE TABLE IF NOT EXISTS goals (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      type TEXT NOT NULL CHECK(type IN ('savings', 'expense_limit')),
+      type TEXT NOT NULL CHECK(type IN ('savings', 'expense_limit', 'category_limit')),
       target_amount REAL NOT NULL,
       current_amount REAL DEFAULT 0,
       start_date TEXT NOT NULL,
@@ -144,8 +144,11 @@ export const initDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
       status TEXT DEFAULT 'on_track',
       icon TEXT,
       color TEXT,
+      category_id TEXT,
+      notification_shown INTEGER DEFAULT 0,
       created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (category_id) REFERENCES categories(id)
     );
 
     -- Budgets table
@@ -172,6 +175,111 @@ export const initDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
     CREATE INDEX IF NOT EXISTS idx_transactions_type ON transactions(type);
     CREATE INDEX IF NOT EXISTS idx_budgets_month ON budgets(month);
   `);
+
+  // Migrate goals table to add category_id and notification_shown columns if they don't exist
+  try {
+    await db.execAsync(`
+      ALTER TABLE goals ADD COLUMN category_id TEXT;
+    `);
+  } catch (error: any) {
+    // Column already exists - safe to ignore
+    if (!error.message?.includes('duplicate column name')) {
+      console.log('Migration note:', error.message);
+    }
+  }
+
+  try {
+    await db.execAsync(`
+      ALTER TABLE goals ADD COLUMN notification_shown INTEGER DEFAULT 0;
+    `);
+  } catch (error: any) {
+    // Column already exists - safe to ignore
+    if (!error.message?.includes('duplicate column name')) {
+      console.log('Migration note:', error.message);
+    }
+  }
+
+  // Migrate goals table to update CHECK constraint for category_limit
+  try {
+    // Check if we need to migrate the constraint
+    const testResult = await db.getFirstAsync<any>(
+      "SELECT sql FROM sqlite_master WHERE type='table' AND name='goals'"
+    );
+
+    if (testResult && testResult.sql && !testResult.sql.includes("'category_limit'")) {
+      console.log('Migrating goals table to support category_limit type...');
+
+      // Check which columns exist
+      const columns = await db.getAllAsync<any>("PRAGMA table_info(goals)");
+      const hasCategoryId = columns.some((col: any) => col.name === 'category_id');
+      const hasNotificationShown = columns.some((col: any) => col.name === 'notification_shown');
+
+      // Create temporary table with correct constraint
+      await db.execAsync(`
+        -- Create new table with correct constraint
+        CREATE TABLE goals_new (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          type TEXT NOT NULL CHECK(type IN ('savings', 'expense_limit', 'category_limit')),
+          target_amount REAL NOT NULL,
+          current_amount REAL DEFAULT 0,
+          start_date TEXT NOT NULL,
+          target_date TEXT,
+          status TEXT DEFAULT 'on_track',
+          icon TEXT,
+          color TEXT,
+          category_id TEXT,
+          notification_shown INTEGER DEFAULT 0,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          FOREIGN KEY (category_id) REFERENCES categories(id)
+        );
+      `);
+
+      // Copy data based on which columns exist
+      if (hasCategoryId && hasNotificationShown) {
+        await db.execAsync(`
+          INSERT INTO goals_new
+          SELECT id, name, type, target_amount, current_amount, start_date, target_date,
+                 status, icon, color, category_id, notification_shown, created_at, updated_at
+          FROM goals;
+        `);
+      } else if (hasCategoryId) {
+        await db.execAsync(`
+          INSERT INTO goals_new
+          SELECT id, name, type, target_amount, current_amount, start_date, target_date,
+                 status, icon, color, category_id, 0 as notification_shown, created_at, updated_at
+          FROM goals;
+        `);
+      } else if (hasNotificationShown) {
+        await db.execAsync(`
+          INSERT INTO goals_new
+          SELECT id, name, type, target_amount, current_amount, start_date, target_date,
+                 status, icon, color, NULL as category_id, notification_shown, created_at, updated_at
+          FROM goals;
+        `);
+      } else {
+        await db.execAsync(`
+          INSERT INTO goals_new
+          SELECT id, name, type, target_amount, current_amount, start_date, target_date,
+                 status, icon, color, NULL as category_id, 0 as notification_shown, created_at, updated_at
+          FROM goals;
+        `);
+      }
+
+      await db.execAsync(`
+        -- Drop old table
+        DROP TABLE goals;
+
+        -- Rename new table
+        ALTER TABLE goals_new RENAME TO goals;
+      `);
+
+      console.log('Goals table migration completed successfully!');
+    }
+  } catch (error: any) {
+    console.log('Goals migration error (may be safe to ignore):', error.message);
+  }
 
   // Initialize default data
   await initDefaultData(db);

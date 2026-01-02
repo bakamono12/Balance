@@ -294,6 +294,8 @@ export const goalService = {
       status: row.status,
       icon: row.icon,
       color: row.color,
+      categoryId: row.category_id,
+      notificationShown: row.notification_shown === 1,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
     }));
@@ -305,8 +307,8 @@ export const goalService = {
     const now = new Date().toISOString();
 
     await db.runAsync(
-      'INSERT INTO goals (id, name, type, target_amount, current_amount, start_date, target_date, status, icon, color, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [id, goal.name, goal.type, goal.targetAmount, goal.currentAmount, goal.startDate, goal.targetDate || null, goal.status, goal.icon || null, goal.color || null, now, now]
+      'INSERT INTO goals (id, name, type, target_amount, current_amount, start_date, target_date, status, icon, color, category_id, notification_shown, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, goal.name, goal.type, goal.targetAmount, goal.currentAmount, goal.startDate, goal.targetDate || null, goal.status, goal.icon || null, goal.color || null, goal.categoryId || null, goal.notificationShown ? 1 : 0, now, now]
     );
 
     return { ...goal, id, createdAt: now, updatedAt: now };
@@ -336,6 +338,14 @@ export const goalService = {
     if (goal.status !== undefined) {
       fields.push('status = ?');
       values.push(goal.status);
+    }
+    if (goal.categoryId !== undefined) {
+      fields.push('category_id = ?');
+      values.push(goal.categoryId);
+    }
+    if (goal.notificationShown !== undefined) {
+      fields.push('notification_shown = ?');
+      values.push(goal.notificationShown ? 1 : 0);
     }
 
     fields.push('updated_at = ?');

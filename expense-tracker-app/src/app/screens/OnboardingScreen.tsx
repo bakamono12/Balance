@@ -91,6 +91,22 @@ export const OnboardingScreen = () => {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      {/* Back Button Header */}
+      <View style={[styles.backButtonContainer, { paddingTop: insets.top + 8 }]}>
+        <TouchableOpacity
+          onPress={() => {
+            if (step === 1) {
+              navigation.goBack();
+            } else {
+              setStep(1);
+            }
+          }}
+          style={styles.backButton}
+        >
+          <MaterialIcons name="arrow-back" size={24} color={theme.colors.text} />
+        </TouchableOpacity>
+      </View>
+
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -238,7 +254,7 @@ export const OnboardingScreen = () => {
       <View style={[styles.footer, { backgroundColor: theme.colors.background, paddingBottom: insets.bottom + 24 }]}>
         {step > 1 && (
           <TouchableOpacity
-            style={[styles.backButton, { backgroundColor: theme.colors.surface }]}
+            style={[styles.backButtonFooter, { backgroundColor: theme.colors.surface }]}
             onPress={() => setStep(step - 1)}
           >
             <MaterialIcons name="arrow-back" size={20} color={theme.colors.text} />
@@ -259,9 +275,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  backButtonContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   content: {
     padding: 24,
-    paddingTop: 60,
   },
   header: {
     alignItems: 'center',
@@ -371,7 +396,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
   },
-  backButton: {
+  backButtonFooter: {
     width: 48,
     height: 48,
     borderRadius: 12,

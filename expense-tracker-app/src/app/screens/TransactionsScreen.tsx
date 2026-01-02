@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, FlatList, Modal, RefreshControl, ActivityIndicator, TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useStore } from '../store';
 import { darkTheme } from '../theme';
@@ -47,16 +47,18 @@ export const TransactionsScreen = () => {
     return map;
   }, [categories]);
 
-  useEffect(() => {
-    const init = async () => {
-      await loadData();
-      // Load first page after data is loaded
-      const filtered = getFilteredTransactions();
-      const firstPage = filtered.slice(0, PAGE_SIZE);
-      setPaginatedData(firstPage);
-    };
-    init();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const init = async () => {
+        await loadData();
+        // Load first page after data is loaded
+        const filtered = getFilteredTransactions();
+        const firstPage = filtered.slice(0, PAGE_SIZE);
+        setPaginatedData(firstPage);
+      };
+      init();
+    }, [])
+  );
 
   // Fully reset pagination when filter or search changes
   useEffect(() => {

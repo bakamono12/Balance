@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Platform,
   Modal,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -64,6 +65,11 @@ export const AddTransactionScreen = ({ route }: any) => {
   // Investment-specific state
   const [fundName, setFundName] = useState(editingTransaction?.fundName || '');
 
+  // Refs for auto-scroll
+  const scrollViewRef = useRef<ScrollView>(null);
+  const notesFieldRef = useRef<View>(null);
+  const investmentFieldRef = useRef<View>(null);
+
   // Filter categories based on transaction type
   const filteredCategories = categories.filter(cat => {
     if (type === 'investment') {
@@ -75,6 +81,20 @@ export const AddTransactionScreen = ({ route }: any) => {
     }
   });
 
+
+  const scrollToField = (fieldRef: React.RefObject<View | null>) => {
+    setTimeout(() => {
+      if (fieldRef.current && scrollViewRef.current) {
+        fieldRef.current.measureLayout(
+          scrollViewRef.current as any,
+          (x, y) => {
+            scrollViewRef.current?.scrollTo({ y: y - 150, animated: true });
+          },
+          () => {} // error callback
+        );
+      }
+    }, 300); // Wait for keyboard animation
+  };
 
   const handleSave = async () => {
     if (!amount || !selectedCategory) {
@@ -139,7 +159,17 @@ export const AddTransactionScreen = ({ route }: any) => {
         <View style={{ width: 28 }} />
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 80}
+      >
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
         <View style={styles.typeSelector}>
           <View style={[styles.typeSelectorContainer, { backgroundColor: theme.colors.surface }]}>
             <TouchableOpacity
@@ -260,7 +290,7 @@ export const AddTransactionScreen = ({ route }: any) => {
 
         {/* Investment Search Section */}
         {type === 'investment' && (
-          <View style={styles.section}>
+          <View style={styles.section} ref={investmentFieldRef}>
             <Text style={[styles.sectionTitle, { color: theme.colors.textSecondary }]}>
               INVESTMENT NAME
             </Text>
@@ -275,6 +305,7 @@ export const AddTransactionScreen = ({ route }: any) => {
                   placeholderTextColor={theme.colors.textSecondary}
                   value={fundName}
                   onChangeText={setFundName}
+                  onFocus={() => scrollToField(investmentFieldRef)}
                 />
               </View>
             </View>
@@ -322,7 +353,7 @@ export const AddTransactionScreen = ({ route }: any) => {
             <MaterialIcons name="chevron-right" size={20} color={theme.colors.textSecondary} />
           </TouchableOpacity>
 
-          <View style={[styles.detailCard, { backgroundColor: theme.colors.surface }]}>
+          <View style={[styles.detailCard, { backgroundColor: theme.colors.surface }]} ref={notesFieldRef}>
             <View style={styles.detailCardLeft}>
               <View style={[styles.detailIcon, { backgroundColor: theme.colors.textSecondary + '20' }]}>
                 <MaterialIcons name="description" size={20} color={theme.colors.textSecondary} />
@@ -334,6 +365,7 @@ export const AddTransactionScreen = ({ route }: any) => {
                 value={notes}
                 onChangeText={setNotes}
                 multiline
+                onFocus={() => scrollToField(notesFieldRef)}
               />
             </View>
           </View>
@@ -341,6 +373,7 @@ export const AddTransactionScreen = ({ route }: any) => {
 
         <View style={{ height: 120 }} />
       </ScrollView>
+      </KeyboardAvoidingView>
 
       <View style={[styles.footer, { backgroundColor: theme.colors.background, paddingBottom: insets.bottom + 20 }]}>
         <Button

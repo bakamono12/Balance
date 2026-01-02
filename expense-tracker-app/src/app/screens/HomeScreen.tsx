@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,13 +9,20 @@ import {
   Image,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useStore } from '../store';
 import { darkTheme } from '../theme';
 import { TransactionItem } from '../components/TransactionItem';
 import { formatCurrency, getCurrentMonth, getMonthStartEnd } from '../utils/formatters';
 import { transactionService } from '../services/database.service';
 import { analyticsService } from '../services/analytics.service';
+
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good Morning,';
+  if (hour < 17) return 'Good Afternoon,';
+  return 'Good Evening,';
+};
 
 export const HomeScreen = () => {
   const navigation = useNavigation<any>();
@@ -28,9 +35,11 @@ export const HomeScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [balanceChange, setBalanceChange] = useState(0);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [])
+  );
 
   const loadData = async () => {
     await loadUser();
@@ -81,7 +90,7 @@ export const HomeScreen = () => {
           </View>
           <View>
             <Text style={[styles.greeting, { color: theme.colors.textSecondary }]}>
-              Good Evening
+              {getGreeting()}
             </Text>
             <Text style={[styles.userName, { color: theme.colors.text }]}>
               {user?.name || 'User'}
@@ -219,6 +228,7 @@ export const HomeScreen = () => {
                     key={transaction.id}
                     transaction={transaction}
                     category={category}
+                    readOnly={true}
                   />
                 );
               })}

@@ -3,7 +3,6 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, Modal,
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants';
 import { useStore } from '../store';
 import { darkTheme } from '../theme';
 import { backupService } from '../services/backup.service';
@@ -18,8 +17,8 @@ import { seedDatabase } from '../utils/seedData';
 
 const { Paths } = FileSystem;
 
-// Check if running in development mode - will be false in production builds
-const __DEV__ = __DEV__ || Constants.appOwnership === 'expo' || Constants.expoConfig?.extra?.isDev === true;
+// Check if running in development mode
+const IS_DEV = __DEV__;
 
 export const ProfileScreen = () => {
   const navigation = useNavigation<any>();
@@ -53,7 +52,7 @@ export const ProfileScreen = () => {
       setEditEmail(user.email || '');
       setSelectedImage(user.profilePhoto || null);
     }
-  }, [user]);
+  }, [user, showEditProfileModal]);
 
   const handlePickImage = async () => {
     try {
@@ -65,7 +64,7 @@ export const ProfileScreen = () => {
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.5,
@@ -90,10 +89,14 @@ export const ProfileScreen = () => {
       await updateUser({
         name: editName.trim(),
         email: editEmail.trim(),
-        profilePhoto: selectedImage || undefined,
+        profilePhoto: selectedImage ?? undefined,
       });
       await loadUser();
       setShowEditProfileModal(false);
+      // Force UI update by re-syncing state
+      if (selectedImage === null) {
+        setSelectedImage(null);
+      }
       Alert.alert('Success', 'Profile updated successfully');
     } catch (error) {
       console.error('Update profile error:', error);
@@ -309,7 +312,7 @@ export const ProfileScreen = () => {
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.profileSection}>
-          <TouchableOpacity onPress={() => setShowEditProfileModal(true)} style={styles.profileImageContainer}>
+          <View style={styles.profileImageContainer}>
             {user?.profilePhoto ? (
               <Image source={{ uri: user.profilePhoto }} style={styles.profileImage} />
             ) : (
@@ -317,10 +320,7 @@ export const ProfileScreen = () => {
                 <MaterialIcons name="person" size={48} color={theme.colors.primary} />
               </View>
             )}
-            <View style={styles.editBadge}>
-              <MaterialIcons name="edit" size={16} color="#fff" />
-            </View>
-          </TouchableOpacity>
+          </View>
           <Text style={[styles.userName, { color: theme.colors.text }]}>
             {user?.name || 'User'}
           </Text>
@@ -424,7 +424,7 @@ export const ProfileScreen = () => {
               <MaterialIcons name="chevron-right" size={20} color={theme.colors.textSecondary} />
             </TouchableOpacity>
 
-            {__DEV__ && (
+            {IS_DEV && (
               <>
                 <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
 
@@ -584,14 +584,46 @@ export const ProfileScreen = () => {
               {/* Profile Image */}
               <View style={styles.imagePickerSection}>
                 <Text style={[styles.label, { color: theme.colors.textSecondary }]}>Profile Picture</Text>
-                <TouchableOpacity onPress={handlePickImage} style={styles.imagePickerButton}>
+                <TouchableOpacity onPress={handlePickImage} style={styles.imagePickerButton} activeOpacity={0.7}>
                   {selectedImage ? (
-                    <Image source={{ uri: selectedImage }} style={styles.previewImage} />
+                    <View style={styles.previewImageContainer}>
+                      <Image source={{ uri: selectedImage }} style={styles.previewImage} />
+                      <View style={styles.imageOverlay}>
+                        <MaterialIcons name="edit" size={20} color="#fff" />
+                      </View>
+                      <TouchableOpacity
+                        style={styles.removeImageButton}
+                        onPress={() => {
+                          Alert.alert(
+                            'Remove Photo',
+                            'Are you sure you want to remove your profile picture?',
+                            [
+                              { text: 'Cancel', style: 'cancel' },
+                              {
+                                text: 'Remove',
+                                style: 'destructive',
+                                onPress: () => setSelectedImage(null)
+                              }
+                            ]
+                          );
+                        }}
+                      >
+                        <MaterialIcons name="close" size={20} color="#fff" />
+                      </TouchableOpacity>
+                    </View>
                   ) : (
-                    <View style={[styles.imagePickerPlaceholder, { backgroundColor: theme.colors.background }]}>
-                      <MaterialIcons name="add-a-photo" size={32} color={theme.colors.textSecondary} />
-                      <Text style={[styles.imagePickerText, { color: theme.colors.textSecondary }]}>
-                        Tap to select image
+                    <View style={[styles.imagePickerPlaceholder, {
+                      backgroundColor: theme.colors.surface,
+                      borderColor: theme.colors.primary + '40'
+                    }]}>
+                      <View style={[styles.iconCircle, { backgroundColor: theme.colors.primary + '20' }]}>
+                        <MaterialIcons name="add-a-photo" size={32} color={theme.colors.primary} />
+                      </View>
+                      <Text style={[styles.imagePickerText, { color: theme.colors.text }]}>
+                        Tap to select photo
+                      </Text>
+                      <Text style={[styles.imagePickerSubtext, { color: theme.colors.textSecondary }]}>
+                        Choose from gallery
                       </Text>
                     </View>
                   )}
@@ -802,25 +834,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileImageContainer: {
-    position: 'relative',
+    width: 96,
+    height: 96,
+    marginBottom: 16,
   },
   profileImage: {
     width: 96,
     height: 96,
     borderRadius: 48,
-  },
-  editBadge: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#137fec',
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: '#0f1419',
   },
   editProfileButton: {
     flexDirection: 'row',
@@ -842,23 +863,62 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imagePickerPlaceholder: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    borderStyle: 'solid',
+    gap: 8,
+  },
+  iconCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imagePickerText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  imagePickerSubtext: {
+    fontSize: 12,
+  },
+  previewImageContainer: {
+    position: 'relative',
+  },
+  previewImage: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+  },
+  imageOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#137fec',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    borderColor: '#1a1f2e',
+  },
+  removeImageButton: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: '#ef4444',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    borderStyle: 'dashed',
-  },
-  imagePickerText: {
-    fontSize: 12,
-    marginTop: 8,
-  },
-  previewImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    borderColor: '#1a1f2e',
   },
   inputGroup: {
     marginBottom: 20,

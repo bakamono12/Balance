@@ -1,116 +1,156 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  TextInput,
-  Modal,
   Alert,
+  Modal,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useStore } from '../store';
 import { darkTheme } from '../theme';
 import { GoalCard } from '../components/GoalCard';
 import { Button } from '../components/Button';
-import { formatCurrency, formatCompactCurrency } from '../utils/formatters';
-import { format } from 'date-fns';
+import { AddGoalModal } from '../components/AddGoalModal';
+import { formatCompactCurrency } from '../utils/formatters';
+import { notificationService } from '../services/notification.service';
+import { transactionService } from '../services/database.service';
 
 export const GoalsScreen = () => {
   const navigation = useNavigation<any>();
-  const { user, goals, loadGoals, addGoal, updateGoal, deleteGoal } = useStore();
+  const { user, goals, categories, loadGoals, loadCategories, addGoal, updateGoal, deleteGoal } = useStore();
   const theme = darkTheme;
 
   const [showModal, setShowModal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<any>(null);
-  const [name, setName] = useState('');
-  const [targetAmount, setTargetAmount] = useState('');
-  const [currentAmount, setCurrentAmount] = useState('');
-  const [targetDate, setTargetDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [periodFilter, setPeriodFilter] = useState<'month' | 'year'>('month');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
 
-  useEffect(() => {
-    loadGoals();
-  }, []);
+  // Reload goals and update progress every time screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      const refreshData = async () => {
+        await loadGoals();
+        await loadCategories();
+        // Update goal progress after loading
+        if (goals.length > 0) {
+          await updateGoalProgress();
+        }
+      };
+      refreshData();
+    }, [selectedMonth, selectedYear, periodFilter])
+  );
 
-  // Reload goals when filter changes
-  useEffect(() => {
-    loadGoals();
-  }, [periodFilter, selectedMonth, selectedYear]);
+  // Update goal progress based on actual transactions
+  const updateGoalProgress = async () => {
+    try {
+      const startOfMonth = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-01`;
+      const endOfMonth = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-31`;
+
+      for (const goal of goals) {
+        if (goal.type === 'expense_limit') {
+          // Calculate total expenses for the month
+          const totalExpense = await transactionService.getTotalByType(
+            'expense',
+            startOfMonth,
+            endOfMonth
+          );
+
+          const progress = (totalExpense / goal.targetAmount) * 100;
+          let status: 'on_track' | 'behind' | 'completed' | 'warning' = 'on_track';
+
+          if (progress >= 100) {
+            status = 'completed';
+          } else if (progress >= 80) {
+            status = 'warning';
+          } else if (progress >= 50) {
+            status = 'on_track';
+          }
+
+          if (totalExpense !== goal.currentAmount || status !== goal.status) {
+            await updateGoal(goal.id, {
+              currentAmount: totalExpense,
+              status,
+            });
+          }
+
+          // Check for notifications
+          await notificationService.checkAndNotifyGoalProgress({
+            ...goal,
+            currentAmount: totalExpense,
+          });
+        } else if (goal.type === 'category_limit' && goal.categoryId) {
+          // Calculate expenses for specific category
+          const transactions = await transactionService.getTransactionsByDateRange(
+            startOfMonth,
+            endOfMonth
+          );
+
+          const categoryExpense = transactions
+            .filter((t) => t.type === 'expense' && t.categoryId === goal.categoryId)
+            .reduce((sum, t) => sum + t.amount, 0);
+
+          const progress = (categoryExpense / goal.targetAmount) * 100;
+          let status: 'on_track' | 'behind' | 'completed' | 'warning' = 'on_track';
+
+          if (progress >= 100) {
+            status = 'completed';
+          } else if (progress >= 80) {
+            status = 'warning';
+          } else if (progress >= 50) {
+            status = 'on_track';
+          }
+
+          if (categoryExpense !== goal.currentAmount || status !== goal.status) {
+            await updateGoal(goal.id, {
+              currentAmount: categoryExpense,
+              status,
+            });
+          }
+
+          // Check for notifications
+          await notificationService.checkAndNotifyGoalProgress({
+            ...goal,
+            currentAmount: categoryExpense,
+          });
+        } else if (goal.type === 'savings') {
+          // For savings goals, check notification based on current amount
+          await notificationService.checkAndNotifyGoalProgress(goal);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating goal progress:', error);
+    }
+  };
 
   const openAddModal = () => {
     setEditingGoal(null);
-    setName('');
-    setTargetAmount('');
-    setCurrentAmount('0');
-    setTargetDate(new Date());
     setShowModal(true);
   };
 
   const openEditModal = (goal: any) => {
     setEditingGoal(goal);
-    setName(goal.name);
-    setTargetAmount(goal.targetAmount.toString());
-    setCurrentAmount(goal.currentAmount.toString());
-    setTargetDate(goal.targetDate ? new Date(goal.targetDate) : new Date());
     setShowModal(true);
   };
 
-  const handleSave = async () => {
-    if (!name.trim() || !targetAmount || parseFloat(targetAmount) <= 0) {
-      Alert.alert('Error', 'Please fill in all required fields');
-      return;
-    }
-
+  const handleSaveGoal = async (goalData: any) => {
     try {
-      setLoading(true);
-      const current = parseFloat(currentAmount) || 0;
-      const target = parseFloat(targetAmount);
-      const progress = (current / target) * 100;
-
-      let status: 'on_track' | 'behind' | 'completed' = 'on_track';
-      if (progress >= 100) {
-        status = 'completed';
-      } else if (progress < 50) {
-        status = 'behind';
-      }
-
       if (editingGoal) {
-        await updateGoal(editingGoal.id, {
-          name: name.trim(),
-          targetAmount: target,
-          currentAmount: current,
-          targetDate: format(targetDate, 'yyyy-MM-dd'),
-          status,
-        });
+        await updateGoal(editingGoal.id, goalData);
       } else {
-        await addGoal({
-          name: name.trim(),
-          type: 'savings',
-          targetAmount: target,
-          currentAmount: current,
-          startDate: format(new Date(), 'yyyy-MM-dd'),
-          targetDate: format(targetDate, 'yyyy-MM-dd'),
-          status,
-          icon: 'flag',
-          color: '#137fec',
-        });
+        await addGoal(goalData);
       }
-      setShowModal(false);
       await loadGoals();
+      await updateGoalProgress();
     } catch (error) {
-      Alert.alert('Error', 'Failed to save goal');
-    } finally {
-      setLoading(false);
+      console.error('Failed to save goal:', error);
+      throw error;
     }
   };
 
@@ -175,11 +215,21 @@ export const GoalsScreen = () => {
   const getFilteredStats = () => {
     const filteredGoals = getFilteredGoals();
     let totalSaved = 0;
+    let totalExpenseLimit = 0;
+    let totalExpenseSpent = 0;
     let completedCount = 0;
 
     filteredGoals.forEach((goal) => {
-      // Sum up current amounts for total saved
-      totalSaved += goal.currentAmount || 0;
+      // Only savings goals contribute to totalSaved
+      if (goal.type === 'savings') {
+        totalSaved += goal.currentAmount || 0;
+      }
+
+      // Expense limit and category limit goals
+      if (goal.type === 'expense_limit' || goal.type === 'category_limit') {
+        totalExpenseLimit += goal.targetAmount || 0;
+        totalExpenseSpent += goal.currentAmount || 0;
+      }
 
       // Count completed goals
       if (goal.status === 'completed') {
@@ -187,10 +237,13 @@ export const GoalsScreen = () => {
       }
     });
 
-    return { totalSaved, completedCount, filteredGoals };
+    // Calculate remaining budget for expense limits
+    const expenseRemaining = Math.max(0, totalExpenseLimit - totalExpenseSpent);
+
+    return { totalSaved, expenseRemaining, totalExpenseSpent, completedCount, filteredGoals };
   };
 
-  const { totalSaved, completedCount, filteredGoals } = getFilteredStats();
+  const { totalSaved, expenseRemaining, totalExpenseSpent, completedCount, filteredGoals } = getFilteredStats();
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -300,6 +353,18 @@ export const GoalsScreen = () => {
           </View>
 
           <View style={[styles.statCard, { backgroundColor: theme.colors.surface }]}>
+            <View style={[styles.statIconContainer, { backgroundColor: 'rgba(245, 158, 11, 0.1)' }]}>
+              <MaterialIcons name="account-balance-wallet" size={20} color="#f59e0b" />
+            </View>
+            <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
+              Budget Left
+            </Text>
+            <Text style={[styles.statValue, { color: theme.colors.text }]}>
+              {formatCompactCurrency(expenseRemaining, user?.currency)}
+            </Text>
+          </View>
+
+          <View style={[styles.statCard, { backgroundColor: theme.colors.surface }]}>
             <View style={[styles.statIconContainer, { backgroundColor: 'rgba(16, 185, 129, 0.1)' }]}>
               <MaterialIcons name="check-circle" size={20} color="#10b981" />
             </View>
@@ -307,7 +372,7 @@ export const GoalsScreen = () => {
               Completed
             </Text>
             <Text style={[styles.statValue, { color: theme.colors.text }]}>
-              {completedCount} {completedCount === 1 ? 'Goal' : 'Goals'}
+              {completedCount}
             </Text>
           </View>
         </View>
@@ -346,128 +411,14 @@ export const GoalsScreen = () => {
         )}
       </ScrollView>
 
-      {/* Add/Edit Modal */}
-      <Modal visible={showModal} animationType="slide" transparent>
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: theme.colors.background }]}>
-            <View style={styles.modalHeader}>
-              <TouchableOpacity onPress={() => setShowModal(false)} style={styles.closeButton}>
-                <MaterialIcons name="close" size={24} color={theme.colors.text} />
-              </TouchableOpacity>
-              <Text style={[styles.modalTitle, { color: theme.colors.text }]}>
-                {editingGoal ? 'Edit Goal' : 'Add Goal'}
-              </Text>
-              <View style={styles.closeButton} />
-            </View>
-
-            <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false}>
-              {/* Goal Name Input Card */}
-              <View style={[styles.inputCard, { backgroundColor: theme.colors.surface }]}>
-                <View style={[styles.inputIconContainer, { backgroundColor: 'rgba(19, 127, 236, 0.1)' }]}>
-                  <MaterialIcons name="flag" size={20} color={theme.colors.primary} />
-                </View>
-                <View style={styles.inputContent}>
-                  <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>
-                    Goal Name
-                  </Text>
-                  <TextInput
-                    style={[styles.inputField, { color: theme.colors.text }]}
-                    placeholder="e.g., Emergency Fund"
-                    placeholderTextColor={theme.colors.textSecondary}
-                    value={name}
-                    onChangeText={setName}
-                  />
-                </View>
-              </View>
-
-              {/* Target Amount Input Card */}
-              <View style={[styles.inputCard, { backgroundColor: theme.colors.surface }]}>
-                <View style={[styles.inputIconContainer, { backgroundColor: 'rgba(16, 185, 129, 0.1)' }]}>
-                  <MaterialIcons name="attach-money" size={20} color="#10b981" />
-                </View>
-                <View style={styles.inputContent}>
-                  <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>
-                    Target Amount
-                  </Text>
-                  <TextInput
-                    style={[styles.inputField, { color: theme.colors.text }]}
-                    placeholder="0.00"
-                    placeholderTextColor={theme.colors.textSecondary}
-                    value={targetAmount}
-                    onChangeText={setTargetAmount}
-                    keyboardType="decimal-pad"
-                  />
-                </View>
-              </View>
-
-              {/* Current Amount Input Card */}
-              <View style={[styles.inputCard, { backgroundColor: theme.colors.surface }]}>
-                <View style={[styles.inputIconContainer, { backgroundColor: 'rgba(245, 158, 11, 0.1)' }]}>
-                  <MaterialIcons name="savings" size={20} color="#f59e0b" />
-                </View>
-                <View style={styles.inputContent}>
-                  <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>
-                    Current Amount
-                  </Text>
-                  <TextInput
-                    style={[styles.inputField, { color: theme.colors.text }]}
-                    placeholder="0.00"
-                    placeholderTextColor={theme.colors.textSecondary}
-                    value={currentAmount}
-                    onChangeText={setCurrentAmount}
-                    keyboardType="decimal-pad"
-                  />
-                </View>
-              </View>
-
-              {/* Target Date Picker Card */}
-              <TouchableOpacity
-                style={[styles.inputCard, { backgroundColor: theme.colors.surface }]}
-                onPress={() => setShowDatePicker(true)}
-              >
-                <View style={[styles.inputIconContainer, { backgroundColor: 'rgba(139, 92, 246, 0.1)' }]}>
-                  <MaterialIcons name="calendar-today" size={20} color="#8b5cf6" />
-                </View>
-                <View style={styles.inputContent}>
-                  <Text style={[styles.inputLabel, { color: theme.colors.textSecondary }]}>
-                    Target Date
-                  </Text>
-                  <Text style={[styles.inputValue, { color: theme.colors.text }]}>
-                    {format(targetDate, 'MMMM dd, yyyy')}
-                  </Text>
-                </View>
-                <MaterialIcons name="chevron-right" size={24} color={theme.colors.textSecondary} />
-              </TouchableOpacity>
-
-              {showDatePicker && (
-                <DateTimePicker
-                  value={targetDate}
-                  mode="date"
-                  display="default"
-                  onChange={(event, date) => {
-                    setShowDatePicker(false);
-                    if (date) setTargetDate(date);
-                  }}
-                  minimumDate={new Date()}
-                />
-              )}
-            </ScrollView>
-
-            <View style={styles.modalFooter}>
-              <TouchableOpacity
-                style={[styles.saveButton, { backgroundColor: theme.colors.primary }]}
-                onPress={handleSave}
-                disabled={loading}
-              >
-                <MaterialIcons name="check-circle" size={24} color="#fff" />
-                <Text style={styles.saveButtonText}>
-                  {loading ? 'Saving...' : editingGoal ? 'Update Goal' : 'Save Goal'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      {/* Add Goal Modal */}
+      <AddGoalModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        onSave={handleSaveGoal}
+        editingGoal={editingGoal}
+        categories={categories}
+      />
 
       {/* Month Picker Modal */}
       <Modal visible={showMonthPicker} animationType="slide" transparent>
@@ -654,29 +605,29 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
-    gap: 16,
+    gap: 12,
     marginBottom: 24,
   },
   statCard: {
     flex: 1,
-    padding: 20,
+    padding: 16,
     borderRadius: 16,
-    gap: 8,
+    gap: 6,
   },
   statIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
   },
   statLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
   },
   statValue: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   sectionHeader: {

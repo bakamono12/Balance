@@ -15,12 +15,111 @@ import { useStore } from '../store';
 import { darkTheme } from '../theme';
 import { Button } from '../components/Button';
 
-const ICON_OPTIONS = [
-  'restaurant', 'directions-car', 'shopping-bag', 'movie', 'phone-iphone',
-  'local-grocery-store', 'flight', 'local-hospital', 'flash-on', 'home',
-  'school', 'fitness-center', 'pets', 'sports-esports', 'music-note',
-  'brush', 'directions-bus', 'local-gas-station', 'local-cafe', 'fastfood',
-];
+// Categorized icon options for better organization
+const ICON_CATEGORIES = {
+  // Food & Dining
+  'Food & Dining': [
+    'restaurant', 'fastfood', 'local-cafe', 'local-pizza', 'local-bar',
+    'local-dining', 'lunch-dining', 'dinner-dining', 'breakfast-dining',
+    'bakery-dining', 'ramen-dining', 'icecream', 'cake', 'coffee',
+    'liquor', 'wine-bar', 'restaurant-menu', 'set-meal'
+  ],
+  // Transportation
+  'Transportation': [
+    'directions-car', 'directions-bus', 'directions-subway', 'directions-train',
+    'local-taxi', 'two-wheeler', 'electric-car', 'electric-bike', 'electric-scooter',
+    'local-gas-station', 'local-parking', 'local-shipping', 'airport-shuttle',
+    'commute', 'directions-bike', 'directions-walk'
+  ],
+  // Shopping
+  'Shopping': [
+    'shopping-bag', 'shopping-cart', 'local-mall', 'store', 'storefront',
+    'local-grocery-store', 'local-convenience-store', 'local-offer', 'loyalty',
+    'redeem', 'card-giftcard', 'checkroom', 'dry-cleaning'
+  ],
+  // Entertainment
+  'Entertainment': [
+    'movie', 'theaters', 'local-movies', 'music-note', 'headphones',
+    'sports-esports', 'casino', 'nightlife', 'celebration', 'party-mode',
+    'sports', 'sports-soccer', 'sports-basketball', 'sports-tennis', 'sports-baseball',
+    'sports-football', 'sports-cricket', 'sports-volleyball', 'sports-golf'
+  ],
+  // Bills & Utilities
+  'Bills & Utilities': [
+    'flash-on', 'water-drop', 'wifi', 'phone-iphone', 'smartphone',
+    'tv', 'router', 'cell-tower', 'podcasts', 'receipt', 'receipt-long'
+  ],
+  // Housing & Home
+  'Housing & Home': [
+    'home', 'house', 'apartment', 'cottage', 'villa', 'cabin',
+    'bed', 'kitchen', 'living', 'chair', 'weekend', 'deck',
+    'garage', 'roofing', 'construction', 'handyman', 'plumbing',
+    'cleaning-services', 'local-laundry-service', 'yard', 'grass'
+  ],
+  // Health & Fitness
+  'Health & Fitness': [
+    'local-hospital', 'medical-services', 'local-pharmacy', 'vaccines',
+    'medication', 'healing', 'monitor-heart', 'favorite', 'psychology',
+    'fitness-center', 'self-improvement', 'spa', 'face', 'content-cut'
+  ],
+  // Education
+  'Education': [
+    'school', 'menu-book', 'library-books', 'auto-stories', 'book',
+    'history-edu', 'science', 'calculate', 'functions', 'draw',
+    'architecture', 'biotech', 'psychology-alt'
+  ],
+  // Work & Business
+  'Work & Business': [
+    'work', 'business-center', 'badge', 'attach-money', 'paid',
+    'price-check', 'point-of-sale', 'receipt', 'account-balance',
+    'credit-card', 'payment', 'currency-exchange', 'request-quote'
+  ],
+  // Investment & Savings
+  'Investment & Savings': [
+    'trending-up', 'trending-down', 'show-chart', 'candlestick-chart',
+    'savings', 'account-balance-wallet', 'wallet', 'local-atm',
+    'currency-bitcoin', 'currency-rupee', 'attach-money', 'euro', 'currency-pound'
+  ],
+  // Travel
+  'Travel': [
+    'flight', 'flight-takeoff', 'flight-land', 'luggage', 'travel-explore',
+    'map', 'location-on', 'explore', 'tour', 'hotel', 'local-hotel',
+    'beach-access', 'pool', 'hiking', 'sailing', 'attractions'
+  ],
+  // Personal Care
+  'Personal Care': [
+    'face', 'content-cut', 'spa', 'shower', 'bathtub', 'brush', 'checkroom',
+    'watch', 'diamond', 'palette', 'style', 'face-retouching-natural'
+  ],
+  // Pets
+  'Pets': [
+    'pets', 'cruelty-free'
+  ],
+  // Insurance
+  'Insurance': [
+    'security', 'shield', 'verified-user', 'health-and-safety',
+    'local-fire-department', 'car-crash'
+  ],
+  // Gifts & Donations
+  'Gifts & Donations': [
+    'card-giftcard', 'redeem', 'volunteer-activism', 'favorite',
+    'diversity-3', 'celebration'
+  ],
+  // Technology
+  'Technology': [
+    'computer', 'laptop', 'tablet', 'devices', 'phone-iphone',
+    'watch', 'headphones', 'keyboard', 'mouse', 'camera',
+    'photo-camera', 'videocam', 'gamepad'
+  ],
+  // Other
+  'Other': [
+    'more-horiz', 'category', 'label', 'bookmark', 'star',
+    'grade', 'help', 'info', 'error'
+  ]
+};
+
+// Flatten all icons for the grid display
+const ICON_OPTIONS = Object.values(ICON_CATEGORIES).flat();
 
 const COLOR_OPTIONS = [
   '#ff9800', '#2196f3', '#14b8a6', '#ec4899', '#9c27b0',
@@ -137,7 +236,11 @@ export const CategoriesScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainer}
+      >
         <View style={styles.categoriesGrid}>
           {categories.map((category) => (
             <TouchableOpacity
@@ -175,7 +278,11 @@ export const CategoriesScreen = () => {
               </TouchableOpacity>
             </View>
 
-            <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false}>
+            <ScrollView
+              style={styles.modalBody}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.modalBodyContent}
+            >
               <View style={styles.inputGroup}>
                 <Text style={[styles.label, { color: theme.colors.textSecondary }]}>
                   Name *
@@ -206,30 +313,45 @@ export const CategoriesScreen = () => {
 
               <View style={styles.inputGroup}>
                 <Text style={[styles.label, { color: theme.colors.textSecondary }]}>
-                  Icon *
+                  Icon * (Tap to select, Long-press to see Icon name)
                 </Text>
-                <View style={styles.iconGrid}>
-                  {ICON_OPTIONS.map((icon) => (
-                    <TouchableOpacity
-                      key={icon}
-                      style={[
-                        styles.iconOption,
-                        {
-                          backgroundColor: selectedIcon === icon
-                            ? theme.colors.primary + '40'
-                            : theme.colors.background,
-                        },
-                      ]}
-                      onPress={() => setSelectedIcon(icon)}
-                    >
-                      <MaterialIcons
-                        name={icon as any}
-                        size={24}
-                        color={selectedIcon === icon ? theme.colors.primary : theme.colors.text}
-                      />
-                    </TouchableOpacity>
+                <ScrollView
+                  style={styles.iconScrollView}
+                  showsVerticalScrollIndicator={true}
+                  nestedScrollEnabled={true}
+                  contentContainerStyle={styles.iconScrollContent}
+                >
+                  {Object.entries(ICON_CATEGORIES).map(([categoryName, icons]) => (
+                    <View key={categoryName} style={styles.iconCategorySection}>
+                      <Text style={[styles.iconCategoryLabel, { color: theme.colors.text }]}>
+                        {categoryName}
+                      </Text>
+                      <View style={styles.iconGrid}>
+                        {icons.map((icon) => (
+                          <TouchableOpacity
+                            key={icon}
+                            style={[
+                              styles.iconOption,
+                              {
+                                backgroundColor: selectedIcon === icon
+                                  ? theme.colors.primary + '40'
+                                  : theme.colors.background,
+                              },
+                            ]}
+                            onPress={() => setSelectedIcon(icon)}
+                            onLongPress={() => Alert.alert('Icon Name', icon)}
+                          >
+                            <MaterialIcons
+                              name={icon as any}
+                              size={24}
+                              color={selectedIcon === icon ? theme.colors.primary : theme.colors.text}
+                            />
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
                   ))}
-                </View>
+                </ScrollView>
               </View>
 
               <View style={styles.inputGroup}>
@@ -292,6 +414,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  contentContainer: {
+    paddingBottom: 24,
+  },
   categoriesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -352,6 +477,9 @@ const styles = StyleSheet.create({
   modalBody: {
     padding: 20,
   },
+  modalBodyContent: {
+    paddingBottom: 20,
+  },
   inputGroup: {
     marginBottom: 20,
   },
@@ -368,6 +496,26 @@ const styles = StyleSheet.create({
   textArea: {
     height: 80,
     textAlignVertical: 'top',
+  },
+  iconScrollView: {
+    maxHeight: 300,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
+    padding: 12,
+  },
+  iconScrollContent: {
+    paddingBottom: 10,
+  },
+  iconCategorySection: {
+    marginBottom: 20,
+  },
+  iconCategoryLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    opacity: 0.7,
   },
   iconGrid: {
     flexDirection: 'row',

@@ -1,8 +1,8 @@
 // Core Types
 export type TransactionType = 'income' | 'expense' | 'investment';
 export type PaymentMode = 'upi' | 'credit_card' | 'debit_card' | 'cash' | 'bank_transfer' | 'wallet';
-export type GoalType = 'savings' | 'expense_limit';
-export type GoalStatus = 'on_track' | 'behind' | 'completed';
+export type GoalType = 'savings' | 'expense_limit' | 'category_limit';
+export type GoalStatus = 'on_track' | 'behind' | 'completed' | 'warning';
 
 export interface User {
   id: string;
@@ -49,6 +49,8 @@ export interface Goal {
   status: GoalStatus;
   icon?: string;
   color?: string;
+  categoryId?: string; // For category_limit goals
+  notificationShown?: boolean; // Track if 80% notification was shown
   createdAt: string;
   updatedAt: string;
 }

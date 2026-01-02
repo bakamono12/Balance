@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/app/navigation/RootNavigator';
 import { initDatabase } from './src/app/storage/database';
 import { useStore } from './src/app/store';
+import { notificationService } from './src/app/services/notification.service';
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
@@ -18,6 +19,9 @@ export default function App() {
     try {
       // Initialize database
       await initDatabase();
+
+      // Initialize notifications
+      await notificationService.initialize();
 
       // Load initial data
       await loadUser();

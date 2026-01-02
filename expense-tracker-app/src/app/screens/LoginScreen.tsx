@@ -49,7 +49,7 @@ export const LoginScreen = () => {
   };
 
   const handleCreateNewAccount = () => {
-    navigation.replace('Onboarding');
+    navigation.navigate('Onboarding');
   };
 
   if (loading) {
@@ -104,7 +104,7 @@ export const LoginScreen = () => {
 
         <View style={styles.actions}>
           <Button
-            title="Continue as User"
+            title={`Continue as ${existingUser.name}`}
             onPress={handleLogin}
             icon={<MaterialIcons name="login" size={20} color="#ffffff" />}
           />
