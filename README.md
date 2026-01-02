@@ -11,8 +11,8 @@
   ![License](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-green.svg)
   
   <p>
-    <a href="https://github.com/bakamono12/expense_tracker/releases/latest">
-      <img src="https://img.shields.io/github/v/release/bakamono12/expense_tracker?label=Download%20APK&style=for-the-badge&color=success" alt="Download APK" />
+    <a href="https://github.com/bakamono12/Balance/releases/latest">
+      <img src="https://img.shields.io/github/v/release/bakamono12/Balance?label=Download%20APK&style=for-the-badge&color=success" alt="Download APK" />
     </a>
   </p>
 </div>
@@ -91,7 +91,7 @@ Before you begin, ensure you have the following installed:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/bakamon12/expense_tracker.git
+   git clone https://github.com/bakamon12/Balance.git
    cd expense_tracker/expense-tracker-app
    ```
 
